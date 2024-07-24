@@ -17,7 +17,7 @@ const items = [
     icon: <InfoCircleOutlined />,
   },
   {
-    label: "Danh sach",
+    label: "Danh sách",
     key: "product",
     icon: <UnorderedListOutlined />,
     children: [
