@@ -1,20 +1,28 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Root from "./routes/root";
+
 import "./index.css";
-import ErrorPage from "./error-page";
-import LayoutPage from "./components/LayoutPage";
+import ErrorPage from "./components/error-page";
+import LoginPage from "./components/LoginPage";
+import RegisterPage from "./components/RegisterPage";
+import AdminProduct from "./pages/Admin/product";
+import GridExample from "./pages/Admin/content";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <LoginPage />,
     errorElement: <ErrorPage />,
   },
   {
-    path: "/card",
-    element: <LayoutPage />,
+    path: "/dang-ky",
+    element: <RegisterPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/admin/product",
+    element: <AdminProduct />,
   },
 ]);
 

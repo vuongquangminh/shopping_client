@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
-  EnvironmentOutlined,
-  InfoCircleOutlined,
-  PercentageOutlined,
-  UnorderedListOutlined,
+  FundViewOutlined,
+  IssuesCloseOutlined,
+  ProfileOutlined,
+  UsergroupAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Menu, Tooltip } from "antd";
@@ -12,80 +12,28 @@ import logo360 from "../assets/360.png";
 
 const items = [
   {
-    label: "Giới thiệu",
-    key: "info",
-    icon: <InfoCircleOutlined />,
+    label: "Quản lý người dùng",
+    key: "user",
+    icon: <UsergroupAddOutlined />,
   },
   {
-    label: "Danh sách",
+    label: "Quản lý sản phẩm",
     key: "product",
-    icon: <UnorderedListOutlined />,
-    children: [
-      {
-        type: "so_mi_dai",
-        label: "Sơ mi dài",
-      },
-      {
-        type: "polo",
-        label: "Polo",
-      },
-      {
-        type: "ao_phong",
-        label: "Áo Phông",
-      },
-      {
-        type: "quan_short",
-        label: "Quần short",
-      },
-      {
-        type: "quan_au",
-        label: "Quần âu",
-      },
-      {
-        type: "quan_jean",
-        label: "Quần Jean",
-      },
-      {
-        type: "quan_kaki",
-        label: "Quần kaki",
-      },
-      {
-        type: "quan_jogger",
-        label: "Quần jogger",
-      },
-    ],
+    icon: <ProfileOutlined />,
   },
   {
-    label: "Sale",
-    key: "sale",
-    icon: <PercentageOutlined />,
-    children: [
-      {
-        type: "99",
-        label: "Đồng giá 99k",
-      },
-      {
-        type: "199",
-        label: "Đồng giá 199k",
-      },
-      {
-        type: "299",
-        label: "Đồng giá 299k",
-      },
-      {
-        type: "599",
-        label: "Đồng giá 599k",
-      },
-    ],
+    label: "Quản lý đơn hàng",
+    key: "order",
+    icon: <IssuesCloseOutlined />,
   },
   {
-    label: "Hệ thống cửa hàng",
-    key: "he_thong_cua_hang",
-    icon: <EnvironmentOutlined />,
+    label: "Doanh thu bán hàng",
+    key: "danh_thu",
+    icon: <FundViewOutlined />,
   },
 ];
 const HeaderPage = () => {
-  const [current, setCurrent] = useState("mail");
+  const [current, setCurrent] = useState("user");
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
@@ -102,8 +50,9 @@ const HeaderPage = () => {
             selectedKeys={[current]}
             mode="horizontal"
             items={items}
+            className="grow"
           />
-          <h4 className=" grow text-end">
+          <h4 className=" text-end">
             <Tooltip placement="top" title={"Tài khoản"}>
               <Button>
                 <UserOutlined />

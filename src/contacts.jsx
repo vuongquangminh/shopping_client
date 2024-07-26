@@ -37,9 +37,9 @@ export default function Contact() {
 
         {contact.twitter && (
           <p>
-            <a target="_blank" href={`https://twitter.com/${contact.twitter}`}>
-              {contact.twitter}
-            </a>
+            {/* <a target="_blank" href={`https://twitter.com/${contact.twitter}`}> */}
+            {/* {contact.twitter}
+            </a> */}
           </p>
         )}
 
