@@ -13,10 +13,9 @@ const LoginPage = () => {
     const login = async () => {
       try {
         const res = await request.post("auth/login", values);
-        console.log("resData: ", res.data.access_token);
         const token = res.data.access_token;
         localStorage.setItem("authToken", token);
-        navigate("/card");
+        navigate("/admin/product");
       } catch (err) {
         api.error({
           message: "Đăng nhập thất bại",
@@ -43,6 +42,7 @@ const LoginPage = () => {
           className="login-form max-w-96 w-1/2 border p-8 bg-slate-300 rounded-lg"
           initialValues={{
             remember: true,
+            password: "12345678",
           }}
           onFinish={onFinish}
         >

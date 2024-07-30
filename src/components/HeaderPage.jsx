@@ -35,7 +35,6 @@ const items = [
 const HeaderPage = () => {
   const [current, setCurrent] = useState("user");
   const onClick = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
   };
   return (

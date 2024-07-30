@@ -11,8 +11,7 @@ const RegisterPage = () => {
   const onFinish = (values) => {
     const register = async () => {
       try {
-        const res = await request.post("auth/register", values);
-        console.log("resData: ", res);
+        await request.post("auth/register", values);
         api.success({
           message: "Thành công",
           description: "Đăng ký tài khoản thành công",

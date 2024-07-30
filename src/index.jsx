@@ -4,10 +4,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./index.css";
 import ErrorPage from "./components/error-page";
-import LoginPage from "./components/LoginPage";
-import RegisterPage from "./components/RegisterPage";
-import AdminProduct from "./pages/Admin/product";
-import GridExample from "./pages/Admin/content";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
+import UserPage from "./pages/Admin/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -21,8 +21,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/admin/product",
-    element: <AdminProduct />,
+    path: "/admin",
+    element: <PrivateOutlet role="admin" />,
+    children: [
+      { path: "", element: <>aaaaaaa</> },
+      { path: "product", element: <UserPage /> },
+    ],
   },
 ]);
 
