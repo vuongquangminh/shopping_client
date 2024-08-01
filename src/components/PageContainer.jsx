@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
@@ -10,6 +10,7 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter";
 import LayoutPage from "./LayoutPage";
 import Title from "antd/es/typography/Title";
 import { Button } from "antd";
+
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
   MenuModule,
@@ -17,7 +18,18 @@ ModuleRegistry.registerModules([
   SetFilterModule,
 ]);
 
-const PageContainer = ({ title, column, api }) => {
+const PageContainer = ({
+  title,
+  apicontext,
+  column,
+  api,
+  rowData,
+  setRowData,
+  errApi,
+  titleCreate,
+  noData,
+  setIsModalOpen,
+}) => {
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
     []
@@ -26,7 +38,6 @@ const PageContainer = ({ title, column, api }) => {
     () => ({ height: "100%", width: "100%", maxHeight: "85%" }),
     []
   );
-  const [rowData, setRowData] = useState();
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
@@ -37,14 +48,31 @@ const PageContainer = ({ title, column, api }) => {
     };
   }, []);
 
-  const onGridReady = useCallback((params) => {
-    const getData = async () => {
-      const res = await api();
-      setRowData(res.data);
-    };
-    getData();
-  }, []);
+  const handleCreate = () => {
+    setIsModalOpen(true);
+  };
 
+  const onGridReady = useCallback(
+    (params) => {
+      // gridApiRef.current = params.api;
+      const getData = async () => {
+        params.api.showLoadingOverlay();
+        try {
+          const res = await api();
+          setRowData(res.data);
+        } catch (err) {
+          apicontext.error({
+            message: "Thất bại",
+            description: errApi,
+          });
+        } finally {
+          params.api.hideOverlay();
+        }
+      };
+      getData();
+    },
+    [api, apicontext, errApi, setRowData]
+  );
   return (
     <LayoutPage>
       <div style={containerStyle} className="px-5">
@@ -52,7 +80,9 @@ const PageContainer = ({ title, column, api }) => {
           <Title level={2} className="">
             {title}
           </Title>
-          <Button type="primary">Thêm người dùng</Button>
+          <Button type="primary" onClick={handleCreate}>
+            {titleCreate}
+          </Button>
         </div>
         <div style={gridStyle} className={"ag-theme-quartz"}>
           <AgGridReact
@@ -60,6 +90,10 @@ const PageContainer = ({ title, column, api }) => {
             columnDefs={column}
             defaultColDef={defaultColDef}
             onGridReady={onGridReady}
+            overlayNoRowsTemplate={noData}
+            overlayLoadingTemplate={`Đang tải`}
+            pagination={true}
+            paginationPageSize={20}
           />
         </div>
       </div>
