@@ -9,9 +9,10 @@ import {
   notification,
   Select,
   Space,
+  Tooltip,
   Upload,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
 const UserPage = () => {
   const [pagination, setPagination] = useState({
@@ -20,65 +21,131 @@ const UserPage = () => {
   });
   const [rowData, setRowData] = useState();
   const [apicontext, contextHolder] = notification.useNotification();
-  const [isModalOpen, setIsModalOpen] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false); // Default to false
   const [form] = Form.useForm();
   const [api, setApi] = useState("user");
   const [fileList, setFileList] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [selectItem, setSelectItem] = useState();
   const column = [
-    { field: "name" },
-    { field: "email" },
-    { field: "role_name" },
-    { field: "avatar" },
-    { field: "phone" },
-    { field: "address" },
+    { headerName: "Tên người dùng", field: "name" },
+    { headerName: "Tên đăng nhập (Email)", field: "email" },
+    { headerName: "Vai trò", field: "role_name" },
+    {
+      headerName: "Ảnh đại diện",
+      field: "avatar",
+      cellRenderer: (data) => (
+        <div className="h-full">
+          <img
+            className="h-full"
+            src={`http://localhost:8000${data.data.avatar}`}
+            alt=""
+          />
+        </div>
+      ),
+    },
+    { headerName: "Số điện thoại", field: "phone" },
+    { headerName: "Địa chỉ", field: "address" },
+    {
+      headerName: "Hành động",
+      field: "action",
+      cellRenderer: ActionCellRender,
+      cellRendererParams: {
+        onEditItem: (item) => {
+          setIsEdit(true);
+          setSelectItem(item);
+          setIsModalOpen(true);
+          item.avatar
+            ? setFileList([
+                {
+                  uid: "-1", // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
+                  name: "example.jpg", // Tên tệp
+                  status: "done", // Trạng thái tệp
+                  url: `http://localhost:8000${item.avatar}`, // Đường dẫn công khai
+                },
+              ])
+            : setFileList([]);
+        },
+        onDeleteItem: (item) => {
+          // console.log("item: ", item);
+          // setIsEdit(true);
+          // setCauHoiSelect(item);
+          // setModalDelete(true);
+        },
+      },
+      filter: false,
+    },
   ];
+
+  useEffect(() => {
+    if (isEdit && selectItem) {
+      form.setFieldsValue({ ...selectItem });
+    }
+  }, [form, isEdit, selectItem]);
 
   const handleOk = () => {
     form.resetFields();
-
     setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     form.resetFields();
     setIsModalOpen(false);
+    setIsEdit(false);
   };
 
   useEffect(() => {
     setApi(`user?page=${pagination.page}`);
   }, [pagination.page]);
 
-  const onFinish = (values) => {
-    console.log("values: ", values);
-    // const createUser = async () => {
-    //   try {
-    //     await request.post("user", values);
-    //     apicontext.success({
-    //       message: "Thành công",
-    //       description: "Thêm người dùng mới thành công",
-    //     });
-    //   } catch {
-    //     apicontext.error({
-    //       message: "Thất bại",
-    //       description: "Thêm người dùng mới thất bại!",
-    //     });
-    //   }
-    // };
-    // createUser();
+  const onFinish = async (values) => {
+    console.log({ "select: ": selectItem, "value: ": values });
+    const formData = new FormData();
+    const idItem = selectItem?.id;
+    // Append form fields
+    Object.keys(values).forEach((key) => {
+      if (key !== "avatar") {
+        // Don't append avatar as it's handled separately
+        formData.append(key, values[key]);
+      }
+    });
+
+    // Append files
+    fileList.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("avatar", file.originFileObj);
+      }
+    });
+
+    try {
+      isEdit
+        ? await request.post(`user/${idItem}`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        : await request.post("user", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+      apicontext.success({
+        message: "Thành công",
+        description: "Thêm người dùng mới thành công",
+      });
+      handleOk(); // Close modal on success
+    } catch (error) {
+      apicontext.error({
+        message: "Thất bại",
+        description: "Thêm người dùng mới thất bại!",
+      });
+    }
   };
 
   const handleChange = ({ fileList: newFileList }) => {
-    const updatedFileList = newFileList.map((file) => {
-      if (file.status === "done") {
-        return file;
-      }
-      return {
-        ...file,
-        status: "done",
-      };
-    });
-    setFileList(updatedFileList);
+    setFileList(newFileList);
   };
+
   const uploadButton = (
     <button
       style={{
@@ -97,6 +164,7 @@ const UserPage = () => {
       </div>
     </button>
   );
+
   return (
     <>
       {contextHolder}
@@ -111,15 +179,16 @@ const UserPage = () => {
         setIsModalOpen={setIsModalOpen}
         apicontext={apicontext}
         errApi="Lấy thông tin người dùng thất bại"
-        titleCreate=" Thêm người dùng"
+        titleCreate="Thêm người dùng"
         noData="Không có người dùng nào"
       />
+
       <Modal
         title="Thêm mới người dùng"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
-        footer={<></>}
+        footer={null} // Using null instead of an empty array
       >
         <Form
           form={form}
@@ -135,24 +204,26 @@ const UserPage = () => {
         >
           <Form.Item
             name="name"
-            label="Name"
-            rules={[{ required: true, message: "Trường name là bắt buộc" }]}
+            label="Tên người dùng"
+            rules={[
+              { required: true, message: "Trường tên người dùng là bắt buộc" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="email"
-            label="Email"
+            label="Tên đăng nhập (Email)"
             rules={[{ required: true, message: "Trường email là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="password"
-            label="Password"
-            rules={[{ required: true, message: "Trường password là bắt buộc" }]}
+            label="Mật khẩu"
+            rules={[{ required: true, message: "Trường mật khẩu là bắt buộc" }]}
           >
-            <Input />
+            <Input.Password />
           </Form.Item>
           <Form.Item
             name="confirm"
@@ -178,32 +249,31 @@ const UserPage = () => {
           >
             <Input.Password />
           </Form.Item>
-
           <Form.Item
             name="phone"
-            label="Phone"
-            rules={[{ required: true, message: "Trường phone là bắt buộc" }]}
+            label="Số điện thoại"
+            rules={[
+              { required: true, message: "Trường số điện thoại là bắt buộc" },
+            ]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="address"
-            label="Address"
-            rules={[{ required: true, message: "Trường address là bắt buộc" }]}
+            label="Địa chỉ"
+            rules={[{ required: true, message: "Trường địa chỉ là bắt buộc" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             name="role_name"
-            label="Role Name"
-            rules={[
-              { required: true, message: "Trường role name là bắt buộc" },
-            ]}
+            label="Vai trò"
+            rules={[{ required: true, message: "Trường vai trò là bắt buộc" }]}
           >
             <Select
               showSearch
               className="w-full"
-              placeholder="Role Name"
+              placeholder="Vai trò"
               optionFilterProp="label"
               filterSort={(optionA, optionB) =>
                 (optionA?.label ?? "")
@@ -222,23 +292,22 @@ const UserPage = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item
-            name="avatar"
-            label="Avatar"
-            rules={[{ required: true, message: "Trường avatar là bắt buộc" }]}
-          >
+          <Form.Item name="avatar" label="Ảnh đại diện">
             <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
               listType="picture-card"
               fileList={fileList}
               onChange={handleChange}
+              customRequest={({ file, onSuccess }) => {
+                setFileList([file]); // Update fileList with the new file
+                onSuccess(file);
+              }}
             >
               {fileList.length >= 1 ? null : uploadButton}
             </Upload>
           </Form.Item>
           <Form.Item className="text-end">
             <Space>
-              <Button onClick={handleOk}>Hủy</Button>
+              <Button onClick={handleCancel}>Hủy</Button>
               <Button htmlType="submit" type="primary">
                 Đồng ý
               </Button>
@@ -246,6 +315,29 @@ const UserPage = () => {
           </Form.Item>
         </Form>
       </Modal>
+    </>
+  );
+};
+
+const ActionCellRender = ({ onEditItem, data }) => {
+  return (
+    <>
+      <Tooltip title={"Chỉnh sửa"}>
+        <Button
+          shape="circle"
+          icon={<EditOutlined />}
+          type="text"
+          onClick={() => onEditItem(data)}
+        />
+      </Tooltip>
+      <Tooltip title={"Xóa"}>
+        <Button
+          shape="circle"
+          icon={<DeleteOutlined />}
+          type="text"
+          onClick={() => onEditItem(data)}
+        />
+      </Tooltip>
     </>
   );
 };

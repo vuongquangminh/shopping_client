@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-quartz.css";
@@ -30,6 +30,8 @@ const PageContainer = ({
   noData,
   setIsModalOpen,
 }) => {
+  const [columnDefs, setColumnDefs] = useState([]);
+
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
     []
@@ -51,6 +53,10 @@ const PageContainer = ({
   const handleCreate = () => {
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    setColumnDefs(column);
+  }, [column, rowData]);
 
   const onGridReady = useCallback(
     (params) => {
@@ -87,7 +93,7 @@ const PageContainer = ({
         <div style={gridStyle} className={"ag-theme-quartz"}>
           <AgGridReact
             rowData={rowData}
-            columnDefs={column}
+            columnDefs={columnDefs}
             defaultColDef={defaultColDef}
             onGridReady={onGridReady}
             overlayNoRowsTemplate={noData}
