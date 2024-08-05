@@ -1,13 +1,16 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./index.css";
-import ErrorPage from "./components/error-page";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-import UserPage from "./pages/Admin/UserPage";
+
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const ErrorPage = lazy(() => import("./components/error-page"));
+const UserPage = lazy(() => import("./pages/Admin/User/UserPage"));
+const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage"));
 
 const router = createBrowserRouter([
   {
@@ -24,8 +27,20 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <PrivateOutlet role="admin" />,
     children: [
-      { path: "", element: <>aaaaaaa</> },
-      { path: "product", element: <UserPage /> },
+      { path: "", element: <>Dasboard</> },
+      {
+        path: "user",
+        children: [
+          {
+            path: "",
+            element: <UserPage />,
+          },
+          {
+            path: ":id",
+            element: <DetailPage />,
+          },
+        ],
+      },
     ],
   },
 ]);

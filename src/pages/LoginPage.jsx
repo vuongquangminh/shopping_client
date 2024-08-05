@@ -15,7 +15,7 @@ const LoginPage = () => {
         const res = await request.post("auth/login", values);
         const token = res.data.access_token;
         localStorage.setItem("authToken", token);
-        navigate("/admin/product");
+        navigate("/admin/user");
       } catch (err) {
         api.error({
           message: "Đăng nhập thất bại",

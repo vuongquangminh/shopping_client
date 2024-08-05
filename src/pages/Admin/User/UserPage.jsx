@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import PageContainer from "../../components/PageContainer";
-import request from "../../utils/request";
+import PageContainer from "../../../components/PageContainer";
+import request from "../../../utils/request";
 import {
   Button,
   Form,
@@ -18,7 +18,8 @@ import {
   PlusOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import ModalDelete from "../../components/Modal/delete";
+import ModalDelete from "../../../components/Modal/delete";
+import { Link } from "react-router-dom";
 
 const UserPage = () => {
   const [apicontext, contextHolder] = notification.useNotification();
@@ -343,12 +344,9 @@ const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
       </Tooltip>
 
       <Tooltip title={"Chi tiết"}>
-        <Button
-          shape="circle"
-          icon={<RightOutlined />}
-          type="text"
-          onClick={() => onEditItem(data)}
-        />
+        <Link to={"" + data.id}>
+          <Button shape="circle" icon={<RightOutlined />} type="text" />
+        </Link>
       </Tooltip>
     </>
   );
