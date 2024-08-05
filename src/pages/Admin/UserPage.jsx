@@ -12,21 +12,23 @@ import {
   Tooltip,
   Upload,
 } from "antd";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
+import ModalDelete from "../../components/Modal/delete";
 
 const UserPage = () => {
-  const [pagination, setPagination] = useState({
-    page: 1,
-    pageSize: 10,
-  });
-  const [rowData, setRowData] = useState();
   const [apicontext, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false); // Default to false
   const [form] = Form.useForm();
-  const [api, setApi] = useState("user");
   const [fileList, setFileList] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
   const [selectItem, setSelectItem] = useState();
+  const [keyRender, setKeyRender] = useState(1);
   const column = [
     { headerName: "Tên người dùng", field: "name" },
     { headerName: "Tên đăng nhập (Email)", field: "email" },
@@ -67,10 +69,8 @@ const UserPage = () => {
             : setFileList([]);
         },
         onDeleteItem: (item) => {
-          // console.log("item: ", item);
-          // setIsEdit(true);
-          // setCauHoiSelect(item);
-          // setModalDelete(true);
+          setSelectItem(item);
+          setModalDelete(true);
         },
       },
       filter: false,
@@ -86,6 +86,7 @@ const UserPage = () => {
   const handleOk = () => {
     form.resetFields();
     setIsModalOpen(false);
+    setKeyRender(Math.random());
   };
 
   const handleCancel = () => {
@@ -94,12 +95,8 @@ const UserPage = () => {
     setIsEdit(false);
   };
 
-  useEffect(() => {
-    setApi(`user?page=${pagination.page}`);
-  }, [pagination.page]);
-
   const onFinish = async (values) => {
-    console.log({ "select: ": selectItem, "value: ": values });
+    // console.log({ "select: ": selectItem, "value: ": values });
     const formData = new FormData();
     const idItem = selectItem?.id;
     // Append form fields
@@ -171,13 +168,10 @@ const UserPage = () => {
       <PageContainer
         title="Quản lý người dùng"
         column={column}
-        api={() => request.get(api)}
-        setPagination={setPagination}
-        key={pagination.page}
-        rowData={rowData}
-        setRowData={setRowData}
+        api={() => request.get("user")}
         setIsModalOpen={setIsModalOpen}
         apicontext={apicontext}
+        key={keyRender}
         errApi="Lấy thông tin người dùng thất bại"
         titleCreate="Thêm người dùng"
         noData="Không có người dùng nào"
@@ -315,11 +309,20 @@ const UserPage = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      <ModalDelete
+        open={modalDelete}
+        setOpen={setModalDelete}
+        name={selectItem?.name}
+        api={() => request.delete(`user/${selectItem.id}`)}
+        apicontext={apicontext}
+        setKeyRender={setKeyRender}
+      />
     </>
   );
 };
 
-const ActionCellRender = ({ onEditItem, data }) => {
+const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
   return (
     <>
       <Tooltip title={"Chỉnh sửa"}>
@@ -334,6 +337,15 @@ const ActionCellRender = ({ onEditItem, data }) => {
         <Button
           shape="circle"
           icon={<DeleteOutlined />}
+          type="text"
+          onClick={() => onDeleteItem(data)}
+        />
+      </Tooltip>
+
+      <Tooltip title={"Chi tiết"}>
+        <Button
+          shape="circle"
+          icon={<RightOutlined />}
           type="text"
           onClick={() => onEditItem(data)}
         />

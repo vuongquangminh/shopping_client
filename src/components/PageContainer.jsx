@@ -23,14 +23,13 @@ const PageContainer = ({
   apicontext,
   column,
   api,
-  rowData,
-  setRowData,
   errApi,
   titleCreate,
   noData,
   setIsModalOpen,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
+  const [rowData, setRowData] = useState();
 
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
