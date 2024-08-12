@@ -1,16 +1,25 @@
-import { Avatar, Breadcrumb, Card, Descriptions, notification } from "antd";
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Card,
+  Descriptions,
+  notification,
+} from "antd";
 import HeaderPage from "../../../components/HeaderPage";
 import { useEffect, useState } from "react";
 import request from "../../../utils/request";
 import { useParams } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
+import CreateNEdit from "../../../components/Modal/CreateNEdit";
 
 const DetailPage = () => {
   const params = useParams();
   const [data, setData] = useState();
   const [description, setDescription] = useState([]);
   const [apicontext, contextHolder] = notification.useNotification();
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -83,10 +92,7 @@ const DetailPage = () => {
           <Card
             style={{ width: 300 }}
             cover={
-              <img
-                alt="example"
-                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-              />
+              <img alt="example" src={`http://localhost:8000${data?.avatar}`} />
             }
             actions={[<EditOutlined key="edit" />]}
           >
@@ -97,7 +103,16 @@ const DetailPage = () => {
             />
           </Card>
         </div>
-        <Descriptions title="Thông tin" items={description} className="mt-12" />
+        <div className="my-5 p-5 bg-slate-200 rounded">
+          <Descriptions title="Thông tin" items={description} />
+        </div>
+
+        <CreateNEdit show={show} setShow={setShow} />
+        <div className="flex justify-end">
+          <Button type="primary" onClick={() => setShow(true)}>
+            Sửa
+          </Button>
+        </div>
       </div>
     </>
   );

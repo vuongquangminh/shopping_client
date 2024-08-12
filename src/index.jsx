@@ -1,16 +1,19 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const RegisterPage = lazy(() => import("./pages/RegisterPage"));
-const ErrorPage = lazy(() => import("./components/error-page"));
-const UserPage = lazy(() => import("./pages/Admin/User/UserPage"));
-const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage"));
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ErrorPage from "./components/error-page";
+import UserPage from "./pages/Admin/User/UserPage";
+import DetailPage from "./pages/Admin/User/DetailPage";
+// const LoginPage = lazy(() => import("./pages/LoginPage"));
+// const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+// const ErrorPage = lazy(() => import("./components/error-page"));
+// const UserPage = lazy(() => import("./pages/Admin/User/UserPage"));
+// const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage"));
 
 const router = createBrowserRouter([
   {
@@ -26,20 +29,16 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <PrivateOutlet role="admin" />,
+    errorElement: <ErrorPage />,
     children: [
-      { path: "", element: <>Dasboard</> },
+      { path: "", element: <div>Dashboard</div> },
       {
         path: "user",
-        children: [
-          {
-            path: "",
-            element: <UserPage />,
-          },
-          {
-            path: ":id",
-            element: <DetailPage />,
-          },
-        ],
+        element: <UserPage />,
+      },
+      {
+        path: "user/:id",
+        element: <DetailPage />,
       },
     ],
   },
