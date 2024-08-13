@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageContainer from "../../../components/PageContainer";
 import request from "../../../utils/request";
 import {
@@ -30,6 +30,17 @@ const UserPage = () => {
   const [modalDelete, setModalDelete] = useState(false);
   const [selectItem, setSelectItem] = useState();
   const [keyRender, setKeyRender] = useState(1);
+
+  const defaultColDef = useMemo(() => {
+    return {
+      flex: 1,
+      minWidth: 150,
+      filter: "agTextColumnFilter",
+      suppressHeaderMenuButton: true,
+      suppressHeaderContextMenu: true,
+    };
+  }, []);
+
   const column = [
     { headerName: "Tên người dùng", field: "name" },
     { headerName: "Tên đăng nhập (Email)", field: "email" },
@@ -169,6 +180,7 @@ const UserPage = () => {
       <PageContainer
         title="Quản lý người dùng"
         column={column}
+        defaultColDef={defaultColDef}
         api={() => request.get("user")}
         setIsModalOpen={setIsModalOpen}
         apicontext={apicontext}

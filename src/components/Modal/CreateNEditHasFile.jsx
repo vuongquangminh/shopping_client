@@ -34,42 +34,8 @@ const CreateNEdit = ({
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    // // console.log({ "select: ": selectItem, "value: ": values });
-    // // const formData = new FormData();
-    // // // const idItem = dataItem?.id;
-    // // // Append form fields
-    // // Object.keys(values).forEach((key) => {
-    // //   if (key !== "avatar") {
-    // //     // Don't append avatar as it's handled separately
-    // //     formData.append(key, values[key]);
-    // //   }
-    // // });
-
-    // // // Append files
-    // // fileList.forEach((file) => {
-    // //   if (file.originFileObj) {
-    // //     formData.append("avatar", file.originFileObj);
-    // //   }
-    // // });
-
-    // try {
-    //   isEdit
-    //     ? await request.put(apiEdit, values)
-    //     : await request.post(apiCreate, values);
-    //   apicontext.success({
-    //     message: "Thành công",
-    //     description: "Thêm người dùng mới thành công",
-    //   });
-    //   handleOk(); // Close modal on success
-    // } catch (error) {
-    //   apicontext.error({
-    //     message: "Thất bại",
-    //     description: "Thêm người dùng mới thất bại!",
-    //   });
-    // }
-
     const formData = new FormData();
-    const idItem = dataItem?.id;
+    // const idItem = dataItem?.id;
     // Append form fields
     Object.keys(values).forEach((key) => {
       if (key !== "avatar") {

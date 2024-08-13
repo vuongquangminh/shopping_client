@@ -7,35 +7,40 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Button, Menu, Tooltip } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import logo360 from "../assets/360.png";
 
 const items = [
   {
     label: "Quản lý người dùng",
-    key: "user",
+    key: "/admin/user",
     icon: <UsergroupAddOutlined />,
   },
   {
     label: "Quản lý sản phẩm",
-    key: "product",
+    key: "/admin/product",
     icon: <ProfileOutlined />,
   },
   {
     label: "Quản lý đơn hàng",
-    key: "order",
+    key: "/admin/order",
     icon: <IssuesCloseOutlined />,
   },
   {
     label: "Doanh thu bán hàng",
-    key: "danh_thu",
+    key: "/admin/danh_thu",
     icon: <FundViewOutlined />,
   },
 ];
 const HeaderPage = () => {
-  const [current, setCurrent] = useState("user");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [current, setCurrent] = useState(location.pathname);
+
   const onClick = (e) => {
     setCurrent(e.key);
+    navigate(e.key);
   };
   return (
     <>

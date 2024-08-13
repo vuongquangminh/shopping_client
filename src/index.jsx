@@ -1,19 +1,19 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import ErrorPage from "./components/error-page";
-import UserPage from "./pages/Admin/User/UserPage";
-import DetailPage from "./pages/Admin/User/DetailPage";
-// const LoginPage = lazy(() => import("./pages/LoginPage"));
-// const RegisterPage = lazy(() => import("./pages/RegisterPage"));
-// const ErrorPage = lazy(() => import("./components/error-page"));
-// const UserPage = lazy(() => import("./pages/Admin/User/UserPage"));
-// const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
+const ErrorPage = lazy(() => import("./components/error-page.jsx"));
+const UserPage = lazy(() => import("./pages/Admin/User/UserPage.jsx"));
+const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
+
+const ProductPage = lazy(() =>
+  import("./pages/Admin/Product/TypeProductPage.jsx")
+);
 
 const router = createBrowserRouter([
   {
@@ -34,11 +34,25 @@ const router = createBrowserRouter([
       { path: "", element: <div>Dashboard</div> },
       {
         path: "user",
-        element: <UserPage />,
+        children: [
+          {
+            path: "",
+            element: <UserPage />,
+          },
+          {
+            path: ":id",
+            element: <DetailPage />,
+          },
+        ],
       },
       {
-        path: "user/:id",
-        element: <DetailPage />,
+        path: "product",
+        children: [
+          {
+            path: "",
+            element: <ProductPage />,
+          },
+        ],
       },
     ],
   },
@@ -46,6 +60,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <React.Suspense fallback={<div>Đang tải...</div>}>
+      <RouterProvider router={router} />
+    </React.Suspense>
   </React.StrictMode>
 );

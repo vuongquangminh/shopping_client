@@ -27,6 +27,7 @@ const PageContainer = ({
   titleCreate,
   noData,
   setIsModalOpen,
+  defaultColDef,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState();
@@ -39,15 +40,15 @@ const PageContainer = ({
     () => ({ height: "100%", width: "100%", maxHeight: "85%" }),
     []
   );
-  const defaultColDef = useMemo(() => {
-    return {
-      flex: 1,
-      minWidth: 150,
-      filter: "agTextColumnFilter",
-      suppressHeaderMenuButton: true,
-      suppressHeaderContextMenu: true,
-    };
-  }, []);
+  // const defaultColDef = useMemo(() => {
+  //   return {
+  //     flex: 1,
+  //     minWidth: 150,
+  //     filter: "agTextColumnFilter",
+  //     suppressHeaderMenuButton: true,
+  //     suppressHeaderContextMenu: true,
+  //   };
+  // }, []);
 
   const handleCreate = () => {
     setIsModalOpen(true);

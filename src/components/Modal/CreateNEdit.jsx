@@ -1,4 +1,3 @@
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Checkbox,
@@ -12,9 +11,7 @@ import {
   Select,
   Space,
   Switch,
-  Upload,
 } from "antd";
-import { useState } from "react";
 import dayjs from "dayjs";
 import request from "../../utils/request";
 
@@ -99,7 +96,7 @@ const CreateNEdit = ({
       label: "CheckBox",
       rule: [{ required: true, message: "Trường email là bắt buộc" }],
       options: ["Apple", "Pear", "Orange"],
-      defaultValue: ["Apple"],
+      initialValue: ["Pear"],
     },
     {
       type: "color",
@@ -130,7 +127,7 @@ const CreateNEdit = ({
       field: "radio",
       label: "Radio",
       rule: [{ required: true, message: "Trường Radio là bắt buộc" }],
-
+      initialValue: 4,
       options: [
         {
           value: 1,
@@ -259,18 +256,15 @@ const CreateNEdit = ({
           name="validateOnly"
           layout="vertical"
           autoComplete="off"
-          initialValues={{
-            // email: "minh@gmail.com",
-            password: "12345678",
-            confirm: "12345678",
-            checkBox: ["Apple"],
-            role_name: "admin",
-            radio: 2,
-          }}
         >
           {fieldForm?.map((item) => {
             return (
-              <Form.Item name={item.field} label={item.label} rules={item.rule}>
+              <Form.Item
+                initialValue={item.initialValue}
+                name={item.field}
+                label={item.label}
+                rules={item.rule}
+              >
                 {renderInput(item)}
               </Form.Item>
             );
