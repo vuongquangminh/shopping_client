@@ -14,154 +14,178 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import request from "../../utils/request";
+import TextArea from "antd/es/input/TextArea";
+import { useEffect } from "react";
 
 const CreateNEdit = ({
   show,
   setShow,
   isEdit,
   setIsEdit,
-  dataItem,
+  item,
+  setItem,
   apicontext,
   apiEdit,
   apiCreate,
+  dataForm,
+  titleEdit,
+  titleCreate,
+  setKeyRender,
 }) => {
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
+    console.log("apiCreate: ", apiCreate);
+    console.log("apiEdit: ", apiEdit);
+
     try {
       isEdit
         ? await request.put(apiEdit, values)
         : await request.post(apiCreate, values);
       apicontext.success({
         message: "Thành công",
-        description: "Thêm người dùng mới thành công",
+        description: isEdit ? "Chỉnh sửa thành công" : "Thêm mới thành công",
       });
-      handleOk(); // Close modal on success
     } catch (error) {
       apicontext.error({
         message: "Thất bại",
-        description: "Thêm người dùng mới thất bại!",
+        description: isEdit ? "Chỉnh sửa thất bại" : "Thêm mới thất bại!",
       });
+    } finally {
+      setShow(false);
+      setIsEdit(false);
+      setItem(undefined);
+      setKeyRender(Math.random());
+      form.resetFields();
     }
-  };
-
-  const handleOk = () => {
-    setShow(false);
   };
 
   const handleCancel = () => {
     setShow(false);
+    setIsEdit(false);
+    form.resetFields();
   };
 
-  const fieldForm = [
-    {
-      type: "input",
-      field: "name",
-      label: "Tên người dùng",
-      rule: [{ required: true, message: "Trường tên người dùng là bắt buộc" }],
-    },
-    {
-      type: "inputNumber",
-      field: "inputNumber",
-      label: "Input Number",
-      rule: [{ required: true, message: "Trường Input Number là bắt buộc" }],
-    },
-    {
-      type: "input",
-      field: "email",
-      label: "Tên đăng nhập (Email)",
-      rule: [{ required: true, message: "Trường email là bắt buộc" }],
-      defaultValue: "1251212@gmail.com",
-    },
-    {
-      type: "select",
-      field: "role_name",
-      label: "Vai trò",
-      rule: [{ required: true, message: "Trường vai trò là bắt buộc" }],
-      options: [
-        {
-          value: "admin",
-          label: "Admin",
-        },
-        {
-          value: "customer",
-          label: "Customer",
-        },
-      ],
-    },
-    {
-      type: "checkBox",
-      field: "checkBox",
-      label: "CheckBox",
-      rule: [{ required: true, message: "Trường email là bắt buộc" }],
-      options: ["Apple", "Pear", "Orange"],
-      initialValue: ["Pear"],
-    },
-    {
-      type: "color",
-      field: "color",
-      label: "Color Picker",
-      rule: [{ required: true, message: "Trường color là bắt buộc" }],
-      size: "small",
-      defaultValue: ["#1677ff"],
-    },
-    {
-      type: "date",
-      field: "Date",
-      label: "Date Picker",
-      rule: [{ required: true, message: "Trường Date là bắt buộc" }],
-      defaultValue: "2015/01/01",
-      dateFormat: "YYYY/MM/DD",
-    },
-    {
-      type: "dateRange",
-      field: "dateRange",
-      label: "Date Ranger",
-      rule: [{ required: true, message: "Trường Date Ranger là bắt buộc" }],
-      defaultValue: ["2015/01/01", "2026/12/11"],
-      dateFormat: "YYYY/MM/DD",
-    },
-    {
-      type: "radio",
-      field: "radio",
-      label: "Radio",
-      rule: [{ required: true, message: "Trường Radio là bắt buộc" }],
-      initialValue: 4,
-      options: [
-        {
-          value: 1,
-          label: "A",
-        },
-        {
-          value: 2,
-          label: "B",
-        },
-        {
-          value: 3,
-          label: "C",
-        },
-        {
-          value: 4,
-          label: "D",
-        },
-      ],
-    },
-    {
-      type: "switch",
-      field: "switch",
-      label: "Switch ",
-      rule: [{ required: true, message: "Trường Switch là bắt buộc" }],
-      defaultValue: false,
-      // size: "small",
-    },
-  ];
+  // const fieldForm = [
+  //   {
+  //     type: "input",
+  //     field: "name",
+  //     label: "Tên người dùng",
+  //     rule: [{ required: true, message: "Trường tên người dùng là bắt buộc" }],
+  //   },
+  //   {
+  //     type: "inputNumber",
+  //     field: "inputNumber",
+  //     label: "Input Number",
+  //     rule: [{ required: true, message: "Trường Input Number là bắt buộc" }],
+  //   },
+  //   {
+  //     type: "input",
+  //     field: "email",
+  //     label: "Tên đăng nhập (Email)",
+  //     rule: [{ required: true, message: "Trường email là bắt buộc" }],
+  //     defaultValue: "1251212@gmail.com",
+  //   },
+  //   {
+  //     type: "select",
+  //     field: "role_name",
+  //     label: "Vai trò",
+  //     rule: [{ required: true, message: "Trường vai trò là bắt buộc" }],
+  //     options: [
+  //       {
+  //         value: "admin",
+  //         label: "Admin",
+  //       },
+  //       {
+  //         value: "customer",
+  //         label: "Customer",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     type: "checkBox",
+  //     field: "checkBox",
+  //     label: "CheckBox",
+  //     rule: [{ required: true, message: "Trường email là bắt buộc" }],
+  //     options: ["Apple", "Pear", "Orange"],
+  //     initialValue: ["Pear"],
+  //   },
+  //   {
+  //     type: "color",
+  //     field: "color",
+  //     label: "Color Picker",
+  //     rule: [{ required: true, message: "Trường color là bắt buộc" }],
+  //     size: "small",
+  //     defaultValue: ["#1677ff"],
+  //   },
+  //   {
+  //     type: "date",
+  //     field: "Date",
+  //     label: "Date Picker",
+  //     rule: [{ required: true, message: "Trường Date là bắt buộc" }],
+  //     defaultValue: "2015/01/01",
+  //     dateFormat: "YYYY/MM/DD",
+  //   },
+  //   {
+  //     type: "dateRange",
+  //     field: "dateRange",
+  //     label: "Date Ranger",
+  //     rule: [{ required: true, message: "Trường Date Ranger là bắt buộc" }],
+  //     defaultValue: ["2015/01/01", "2026/12/11"],
+  //     dateFormat: "YYYY/MM/DD",
+  //   },
+  //   {
+  //     type: "radio",
+  //     field: "radio",
+  //     label: "Radio",
+  //     rule: [{ required: true, message: "Trường Radio là bắt buộc" }],
+  //     initialValue: 4,
+  //     options: [
+  //       {
+  //         value: 1,
+  //         label: "A",
+  //       },
+  //       {
+  //         value: 2,
+  //         label: "B",
+  //       },
+  //       {
+  //         value: 3,
+  //         label: "C",
+  //       },
+  //       {
+  //         value: 4,
+  //         label: "D",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     type: "switch",
+  //     field: "switch",
+  //     label: "Switch ",
+  //     rule: [{ required: true, message: "Trường Switch là bắt buộc" }],
+  //     defaultValue: false,
+  //     // size: "small",
+  //   },
+  // ];
 
   const renderInput = (item) => {
-    console.log("item: ", item);
     if (item.type === "input") {
       return (
-        <Input defaultValue={item.defaultValue} disabled={item.disabled} />
+        <Input
+          defaultValue={item.defaultValue}
+          disabled={item.disabled}
+          placeholder={item.placeholder}
+        />
+      );
+    } else if (item.type === "textArea") {
+      return (
+        <TextArea
+          placeholder={item.placeholder}
+          allowClear
+          style={{ height: 120, resize: "none" }}
+        />
       );
     } else if (item.type === "inputNumber") {
       return (
@@ -241,12 +265,14 @@ const CreateNEdit = ({
     }
   };
 
+  useEffect(() => {
+    item && isEdit && form.setFieldsValue(item);
+  }, [item]);
   return (
     <>
       <Modal
-        title="Thêm mới người dùng"
+        title={isEdit ? titleEdit : titleCreate}
         open={show}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={null} // Using null instead of an empty array
       >
@@ -257,7 +283,7 @@ const CreateNEdit = ({
           layout="vertical"
           autoComplete="off"
         >
-          {fieldForm?.map((item) => {
+          {dataForm?.map((item) => {
             return (
               <Form.Item
                 initialValue={item.initialValue}

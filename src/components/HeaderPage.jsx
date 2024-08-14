@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   FundViewOutlined,
   IssuesCloseOutlined,
+  OrderedListOutlined,
   ProfileOutlined,
   UsergroupAddOutlined,
   UserOutlined,
@@ -18,9 +19,14 @@ const items = [
     icon: <UsergroupAddOutlined />,
   },
   {
+    label: "Quản lý loại phẩm",
+    key: "/admin/type-product",
+    icon: <ProfileOutlined />,
+  },
+  {
     label: "Quản lý sản phẩm",
     key: "/admin/product",
-    icon: <ProfileOutlined />,
+    icon: <OrderedListOutlined />,
   },
   {
     label: "Quản lý đơn hàng",
