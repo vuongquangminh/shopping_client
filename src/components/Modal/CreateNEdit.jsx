@@ -36,9 +36,6 @@ const CreateNEdit = ({
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    console.log("apiCreate: ", apiCreate);
-    console.log("apiEdit: ", apiEdit);
-
     try {
       isEdit
         ? await request.put(apiEdit, values)

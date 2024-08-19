@@ -14,31 +14,36 @@ import {
   Switch,
   Upload,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import request from "../../utils/request";
+import TextArea from "antd/es/input/TextArea";
 
-const CreateNEdit = ({
+const CreateNEditHasFile = ({
   show,
   setShow,
   isEdit,
   setIsEdit,
-  dataItem,
+  item,
+  setItem,
   apicontext,
   apiEdit,
   apiCreate,
+  dataForm,
+  titleEdit,
+  titleCreate,
+  setKeyRender,
+  fileName,
 }) => {
   const [fileList, setFileList] = useState([]);
-
   const { RangePicker } = DatePicker;
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     const formData = new FormData();
-    // const idItem = dataItem?.id;
     // Append form fields
     Object.keys(values).forEach((key) => {
-      if (key !== "avatar") {
+      if (key !== fileName) {
         // Don't append avatar as it's handled separately
         formData.append(key, values[key]);
       }
@@ -47,9 +52,10 @@ const CreateNEdit = ({
     // Append files
     fileList.forEach((file) => {
       if (file.originFileObj) {
-        formData.append("avatar", file.originFileObj);
+        formData.append(fileName, file.originFileObj);
       }
     });
+    console.log("formData: ", formData);
 
     try {
       isEdit
@@ -65,27 +71,33 @@ const CreateNEdit = ({
           });
       apicontext.success({
         message: "Thành công",
-        description: "Thêm người dùng mới thành công",
+        description: isEdit ? "Chỉnh sửa thành công" : "Thêm mới thành công",
       });
-      handleOk(); // Close modal on success
     } catch (error) {
       apicontext.error({
         message: "Thất bại",
-        description: "Thêm người dùng mới thất bại!",
+        description: isEdit ? "Chỉnh sửa thất bại" : "Thêm mới thất bại!",
       });
+    } finally {
+      setShow(false);
+      setIsEdit(false);
+      setItem(undefined);
+      setFileList([]);
+      setKeyRender(Math.random());
+      form.resetFields();
     }
-  };
-
-  const handleOk = () => {
-    setShow(false);
   };
 
   const handleCancel = () => {
     setShow(false);
+    setIsEdit(false);
+    form.resetFields();
+    setFileList([]);
   };
 
   //Start Upload img
   const handleChange = ({ fileList: newFileList }) => {
+    // console.log("newFilist: ", newFileList);
     setFileList(newFileList);
   };
 
@@ -109,126 +121,125 @@ const CreateNEdit = ({
   );
   //End Upload img
 
-  const fieldForm = [
-    {
-      type: "input",
-      field: "name",
-      label: "Tên người dùng",
-      rule: [{ required: true, message: "Trường tên người dùng là bắt buộc" }],
-    },
-    {
-      type: "inputNumber",
-      field: "inputNumber",
-      label: "Input Number",
-      rule: [{ required: true, message: "Trường Input Number là bắt buộc" }],
-    },
-    {
-      type: "input",
-      field: "email",
-      label: "Tên đăng nhập (Email)",
-      rule: [{ required: true, message: "Trường email là bắt buộc" }],
-      defaultValue: "1251212@gmail.com",
-    },
-    {
-      type: "select",
-      field: "role_name",
-      label: "Vai trò",
-      rule: [{ required: true, message: "Trường vai trò là bắt buộc" }],
-      options: [
-        {
-          value: "admin",
-          label: "Admin",
-        },
-        {
-          value: "customer",
-          label: "Customer",
-        },
-      ],
-    },
-    {
-      type: "checkBox",
-      field: "checkBox",
-      label: "CheckBox",
-      rule: [{ required: true, message: "Trường email là bắt buộc" }],
-      options: ["Apple", "Pear", "Orange"],
-      defaultValue: ["Apple"],
-    },
-    {
-      type: "color",
-      field: "color",
-      label: "Color Picker",
-      rule: [{ required: true, message: "Trường color là bắt buộc" }],
-      size: "small",
-      defaultValue: ["#1677ff"],
-    },
-    {
-      type: "date",
-      field: "Date",
-      label: "Date Picker",
-      rule: [{ required: true, message: "Trường Date là bắt buộc" }],
-      defaultValue: "2015/01/01",
-      dateFormat: "YYYY/MM/DD",
-    },
-    {
-      type: "dateRange",
-      field: "dateRange",
-      label: "Date Ranger",
-      rule: [{ required: true, message: "Trường Date Ranger là bắt buộc" }],
-      defaultValue: ["2015/01/01", "2026/12/11"],
-      dateFormat: "YYYY/MM/DD",
-    },
-    {
-      type: "radio",
-      field: "radio",
-      label: "Radio",
-      rule: [{ required: true, message: "Trường Radio là bắt buộc" }],
+  // const fieldForm = [
+  //   {
+  //     type: "input",
+  //     field: "name",
+  //     label: "Tên người dùng",
+  //     rule: [{ required: true, message: "Trường tên người dùng là bắt buộc" }],
+  //   },
+  //   {
+  //     type: "inputNumber",
+  //     field: "inputNumber",
+  //     label: "Input Number",
+  //     rule: [{ required: true, message: "Trường Input Number là bắt buộc" }],
+  //   },
+  //   {
+  //     type: "input",
+  //     field: "email",
+  //     label: "Tên đăng nhập (Email)",
+  //     rule: [{ required: true, message: "Trường email là bắt buộc" }],
+  //     defaultValue: "1251212@gmail.com",
+  //   },
+  //   {
+  //     type: "select",
+  //     field: "role_name",
+  //     label: "Vai trò",
+  //     rule: [{ required: true, message: "Trường vai trò là bắt buộc" }],
+  //     options: [
+  //       {
+  //         value: "admin",
+  //         label: "Admin",
+  //       },
+  //       {
+  //         value: "customer",
+  //         label: "Customer",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     type: "checkBox",
+  //     field: "checkBox",
+  //     label: "CheckBox",
+  //     rule: [{ required: true, message: "Trường email là bắt buộc" }],
+  //     options: ["Apple", "Pear", "Orange"],
+  //     defaultValue: ["Apple"],
+  //   },
+  //   {
+  //     type: "color",
+  //     field: "color",
+  //     label: "Color Picker",
+  //     rule: [{ required: true, message: "Trường color là bắt buộc" }],
+  //     size: "small",
+  //     defaultValue: ["#1677ff"],
+  //   },
+  //   {
+  //     type: "date",
+  //     field: "Date",
+  //     label: "Date Picker",
+  //     rule: [{ required: true, message: "Trường Date là bắt buộc" }],
+  //     defaultValue: "2015/01/01",
+  //     dateFormat: "YYYY/MM/DD",
+  //   },
+  //   {
+  //     type: "dateRange",
+  //     field: "dateRange",
+  //     label: "Date Ranger",
+  //     rule: [{ required: true, message: "Trường Date Ranger là bắt buộc" }],
+  //     defaultValue: ["2015/01/01", "2026/12/11"],
+  //     dateFormat: "YYYY/MM/DD",
+  //   },
+  //   {
+  //     type: "radio",
+  //     field: "radio",
+  //     label: "Radio",
+  //     rule: [{ required: true, message: "Trường Radio là bắt buộc" }],
 
-      options: [
-        {
-          value: 1,
-          label: "A",
-        },
-        {
-          value: 2,
-          label: "B",
-        },
-        {
-          value: 3,
-          label: "C",
-        },
-        {
-          value: 4,
-          label: "D",
-        },
-      ],
-    },
-    {
-      type: "switch",
-      field: "switch",
-      label: "Switch ",
-      rule: [{ required: true, message: "Trường Switch là bắt buộc" }],
-      defaultValue: false,
-      // size: "small",
-    },
-    {
-      type: "upload",
-      field: "upload",
-      label: "Upload ",
-      rule: [{ required: true, message: "Trường Upload là bắt buộc" }],
-      fileList: [
-        {
-          uid: "-1", // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
-          name: "example.jpg", // Tên tệp
-          status: "done", // Trạng thái tệp
-          url: `http://localhost:8000/storage/avatars/1722619400.jpg`, // Đường dẫn công khai
-        },
-      ],
-      // size: "small",
-    },
-  ];
+  //     options: [
+  //       {
+  //         value: 1,
+  //         label: "A",
+  //       },
+  //       {
+  //         value: 2,
+  //         label: "B",
+  //       },
+  //       {
+  //         value: 3,
+  //         label: "C",
+  //       },
+  //       {
+  //         value: 4,
+  //         label: "D",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     type: "switch",
+  //     field: "switch",
+  //     label: "Switch ",
+  //     rule: [{ required: true, message: "Trường Switch là bắt buộc" }],
+  //     defaultValue: false,
+  //     // size: "small",
+  //   },
+  //   {
+  //     type: "upload",
+  //     field: "upload",
+  //     label: "Upload ",
+  //     rule: [{ required: true, message: "Trường Upload là bắt buộc" }],
+  //     fileList: [
+  //       {
+  //         uid: "-1", // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
+  //         name: "example.jpg", // Tên tệp
+  //         status: "done", // Trạng thái tệp
+  //         url: `http://localhost:8000/storage/avatars/1722619400.jpg`, // Đường dẫn công khai
+  //       },
+  //     ],
+  //     // size: "small",
+  //   },
+  // ];
 
   const renderInput = (item) => {
-    console.log("item: ", item);
     if (item.type === "input") {
       return (
         <Input defaultValue={item.defaultValue} disabled={item.disabled} />
@@ -241,6 +252,14 @@ const CreateNEdit = ({
           defaultValue={item?.defaultValue}
           disabled={item.disabled}
           className="w-full"
+        />
+      );
+    } else if (item.type === "textArea") {
+      return (
+        <TextArea
+          placeholder={item.placeholder}
+          allowClear
+          style={{ height: 120, resize: "none" }}
         />
       );
     } else if (item.type === "checkBox") {
@@ -312,25 +331,37 @@ const CreateNEdit = ({
       return (
         <Upload
           listType="picture-card"
-          fileList={item.fileList}
+          fileList={fileList}
           onChange={handleChange}
           customRequest={({ file, onSuccess }) => {
             setFileList([file]); // Update fileList with the new file
             onSuccess(file);
           }}
         >
-          {item.fileList?.length >= 1 ? null : uploadButton}
+          {fileList?.length >= 1 ? null : uploadButton}
         </Upload>
       );
     }
   };
+  useEffect(() => {
+    item && isEdit && form.setFieldsValue(item);
+    isEdit && item
+      ? setFileList([
+          {
+            uid: -1, // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
+            name: "example.jpg", // Tên tệp
+            status: "done", // Trạng thái tệp
+            url: `http://localhost:8000${item?.image}`, // Đường dẫn công khai
+          },
+        ])
+      : setFileList([]);
+  }, [item, isEdit]);
 
   return (
     <>
       <Modal
-        title="Thêm mới người dùng"
+        title={isEdit ? titleEdit : titleCreate}
         open={show}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={null} // Using null instead of an empty array
       >
@@ -340,127 +371,20 @@ const CreateNEdit = ({
           name="validateOnly"
           layout="vertical"
           autoComplete="off"
-          initialValues={{
-            // email: "minh@gmail.com",
-            password: "12345678",
-            confirm: "12345678",
-            checkBox: ["Apple"],
-            role_name: "admin",
-            radio: 2,
-          }}
         >
-          {fieldForm?.map((item) => {
+          {dataForm?.map((item) => {
             return (
-              <Form.Item name={item.field} label={item.label} rules={item.rule}>
+              <Form.Item
+                initialValue={item.initialValue}
+                name={item.field}
+                label={item.label}
+                rules={item.rule}
+              >
                 {renderInput(item)}
               </Form.Item>
             );
           })}
-          {/* <Checkbox.Group options={aaa} value={["Apple2"]} /> */}
 
-          {/* <Form.Item
-            name="name"
-            label="Tên người dùng"
-            rules={[
-              { required: true, message: "Trường tên người dùng là bắt buộc" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Tên đăng nhập (Email)"
-            rules={[{ required: true, message: "Trường email là bắt buộc" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Mật khẩu"
-            rules={[{ required: true, message: "Trường mật khẩu là bắt buộc" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="confirm"
-            label="Nhập lại mật khẩu"
-            dependencies={["password"]}
-            hasFeedback
-            rules={[
-              {
-                required: true,
-                message: "Nhập lại mật khẩu!",
-              },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Mật khẩu không trùng khớp!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            name="phone"
-            label="Số điện thoại"
-            rules={[
-              { required: true, message: "Trường số điện thoại là bắt buộc" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="Địa chỉ"
-            rules={[{ required: true, message: "Trường địa chỉ là bắt buộc" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="role_name"
-            label="Vai trò"
-            rules={[{ required: true, message: "Trường vai trò là bắt buộc" }]}
-          >
-            <Select
-              showSearch
-              className="w-full"
-              placeholder="Vai trò"
-              optionFilterProp="label"
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
-              }
-              options={[
-                {
-                  value: "admin",
-                  label: "Admin",
-                },
-                {
-                  value: "customer",
-                  label: "Customer",
-                },
-              ]}
-            />
-          </Form.Item>
-          <Form.Item name="avatar" label="Ảnh đại diện">
-            <Upload
-              listType="picture-card"
-              fileList={fileList}
-              onChange={handleChange}
-              customRequest={({ file, onSuccess }) => {
-                setFileList([file]); // Update fileList with the new file
-                onSuccess(file);
-              }}
-            >
-              {fileList.length >= 1 ? null : uploadButton}
-            </Upload>
-          </Form.Item> */}
           <Form.Item className="text-end">
             <Space>
               <Button onClick={handleCancel}>Hủy</Button>
@@ -475,4 +399,4 @@ const CreateNEdit = ({
   );
 };
 
-export default CreateNEdit;
+export default CreateNEditHasFile;
