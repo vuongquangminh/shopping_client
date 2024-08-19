@@ -55,7 +55,6 @@ const CreateNEditHasFile = ({
         formData.append(fileName, file.originFileObj);
       }
     });
-    console.log("formData: ", formData);
 
     try {
       isEdit
