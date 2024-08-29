@@ -293,8 +293,12 @@ const UserPage = () => {
                   label: "Admin",
                 },
                 {
+                  value: "nhan_su",
+                  label: "Nhân sự",
+                },
+                {
                   value: "customer",
-                  label: "Customer",
+                  label: "Khách hàng",
                 },
               ]}
             />

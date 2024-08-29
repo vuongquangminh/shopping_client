@@ -212,9 +212,9 @@ const CreateNEdit = ({
     } else if (item.type === "date") {
       return (
         <DatePicker
-          defaultValue={dayjs(item.defaultValue, item.dateFormat)}
+          className="w-full"
+          // defaultValue={dateValue}
           format={item.dateFormat}
-          disabled={item.disabled}
         />
       );
     } else if (item.type === "dateRange") {

@@ -279,6 +279,7 @@ const CreateNEditHasFile = ({
     } else if (item.type === "date") {
       return (
         <DatePicker
+          className="w-full"
           defaultValue={dayjs(item.defaultValue, item.dateFormat)}
           format={item.dateFormat}
           disabled={item.disabled}
