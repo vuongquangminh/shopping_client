@@ -5,6 +5,7 @@ import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
+import DetailOrderPage from "./pages/Admin/Order/DetailOrderPage.jsx";
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
 const ErrorPage = lazy(() => import("./components/error-page.jsx"));
@@ -75,7 +76,7 @@ const router = createBrowserRouter([
           },
           {
             path: ":id",
-            element: <OrderPage />,
+            element: <DetailOrderPage />,
           },
         ],
       },

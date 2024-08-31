@@ -4,8 +4,9 @@ import PageContainer from "../../../components/PageContainer";
 import request from "../../../utils/request";
 import CreateNEdit from "../../../components/Modal/CreateNEdit";
 import ModalDelete from "../../../components/Modal/delete";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 const OrderPage = () => {
   const [apicontext, contextHolder] = notification.useNotification();
@@ -45,7 +46,7 @@ const OrderPage = () => {
             ...item,
             ngay_han: item.ngay_han && dayjs(item.ngay_han, "YYYY-MM-DD"),
             user_name: item?.user?.name,
-            nhan_su_name: item?.nhan_su?.name,
+            nhan_su_id: item?.nhan_su?.name,
           });
           setIsModalOpen(true);
         },
@@ -70,10 +71,11 @@ const OrderPage = () => {
         type: "input",
         field: "total_price",
         label: "Giá trị đơn hàng",
+        readOnly: true,
       },
       {
         type: "select",
-        field: "nhan_su_name",
+        field: "nhan_su_id",
         label: "Người giao hàng",
         options: nhanSu?.map((item) => {
           return {
@@ -130,7 +132,6 @@ const OrderPage = () => {
     getNhanSu();
   }, []);
 
-  console.log("nhanSu: ", nhanSu);
   return (
     <>
       {contextHolder}
@@ -155,8 +156,8 @@ const OrderPage = () => {
         apicontext={apicontext}
         dataForm={dataForm}
         setKeyRender={setKeyRender}
-        apiCreate={`type-product`}
-        apiEdit={item && `type-product/${item?.id}`}
+        apiCreate={`order`}
+        apiEdit={item && `order/${item?.id}`}
         titleCreate={"Thêm đơn hàng mới"}
         titleEdit={"Chỉnh sửa đơn hàng"}
         dateField={"ngay_han"}
@@ -165,8 +166,8 @@ const OrderPage = () => {
       <ModalDelete
         open={modalDelete}
         setOpen={setModalDelete}
-        name={item?.name}
-        api={() => `type-product/${item.id}`}
+        name={`đơn hàng của ${item?.user.name}`}
+        api={`order/${item?.id}`}
         apicontext={apicontext}
         setKeyRender={setKeyRender}
       />
@@ -194,6 +195,11 @@ const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
           type="text"
           onClick={() => onDeleteItem(data)}
         />
+      </Tooltip>
+      <Tooltip title={"Chi tiết"}>
+        <Link to={"" + data.id}>
+          <Button shape="circle" icon={<RightOutlined />} type="text" />
+        </Link>
       </Tooltip>
     </>
   );

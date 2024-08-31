@@ -174,6 +174,7 @@ const CreateNEdit = ({
           defaultValue={item.defaultValue}
           disabled={item.disabled}
           placeholder={item.placeholder}
+          readOnly={item.readOnly}
         />
       );
     } else if (item.type === "textArea") {

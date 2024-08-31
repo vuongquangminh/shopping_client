@@ -91,7 +91,7 @@ const TypeProductPage = () => {
         open={modalDelete}
         setOpen={setModalDelete}
         name={item?.name}
-        api={() => `type-product/${item.id}`}
+        api={`type-product/${item?.id}`}
         apicontext={apicontext}
         setKeyRender={setKeyRender}
       />

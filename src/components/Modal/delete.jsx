@@ -1,4 +1,5 @@
 import { Modal, Result } from "antd";
+import request from "../../utils/request";
 
 const ModalDelete = ({
   open,
@@ -11,7 +12,7 @@ const ModalDelete = ({
   const handleOk = () => {
     const apiDelete = async () => {
       try {
-        const res = await api();
+        const res = await request.delete(api);
         console.log("res: ", res);
         apicontext.success({
           message: "Thất bại",

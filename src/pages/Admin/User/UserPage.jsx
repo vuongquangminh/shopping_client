@@ -331,7 +331,7 @@ const UserPage = () => {
         open={modalDelete}
         setOpen={setModalDelete}
         name={selectItem?.name}
-        api={() => request.delete(`user/${selectItem.id}`)}
+        api={`user/${selectItem?.id}`}
         apicontext={apicontext}
         setKeyRender={setKeyRender}
       />

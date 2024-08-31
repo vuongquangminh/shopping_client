@@ -161,7 +161,7 @@ const ProductPage = () => {
         open={modalDelete}
         setOpen={setModalDelete}
         name={item?.name}
-        api={() => `product/${item.id}`}
+        api={`product/${item?.id}`}
         apicontext={apicontext}
         setKeyRender={setKeyRender}
       />
