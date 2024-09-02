@@ -35,11 +35,11 @@ const items = [
   },
   {
     label: "Doanh thu bán hàng",
-    key: "/admin/danh_thu",
+    key: "/admin/doanh-thu/product",
     icon: <FundViewOutlined />,
   },
 ];
-const HeaderPage = () => {
+const HeaderPage = ({ urlPath }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [current, setCurrent] = useState(location.pathname);
@@ -59,7 +59,7 @@ const HeaderPage = () => {
             onClick={onClick}
             selectedKeys={[current]}
             mode="horizontal"
-            items={items}
+            items={urlPath ? urlPath : items}
             className="grow"
           />
           <h4 className=" text-end">

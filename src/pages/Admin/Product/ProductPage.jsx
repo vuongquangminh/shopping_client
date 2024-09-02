@@ -89,7 +89,7 @@ const ProductPage = () => {
         ],
         options: typeProduct.map((item) => {
           return {
-            value: item.name,
+            value: item.id,
             label: item.name,
           };
         }),
