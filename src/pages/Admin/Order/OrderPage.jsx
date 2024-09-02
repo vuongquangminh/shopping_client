@@ -65,13 +65,13 @@ const OrderPage = () => {
         type: "input",
         field: "user_name",
         label: "Tên người",
-        readOnly: true,
+        readOnly: isEdit,
       },
       {
-        type: "input",
+        type: "inputNumber",
         field: "total_price",
         label: "Giá trị đơn hàng",
-        readOnly: true,
+        readOnly: isEdit,
       },
       {
         type: "select",
@@ -116,7 +116,7 @@ const OrderPage = () => {
       // },
     ];
     setDataForm(dataForm);
-  }, [nhanSu]);
+  }, [nhanSu, isEdit]);
 
   useEffect(() => {
     const getNhanSu = async () => {
@@ -143,7 +143,7 @@ const OrderPage = () => {
         apicontext={apicontext}
         key={keyRender}
         errApi="Lấy thông tin đơn hàng thất bại"
-        titleCreate="Thêm đơn hàng"
+        // titleCreate="Thêm đơn hàng"
         noData="Không có đơn hàng nào"
       />
       <CreateNEdit

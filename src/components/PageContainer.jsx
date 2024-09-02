@@ -86,9 +86,11 @@ const PageContainer = ({
           <Title level={2} className="">
             {title}
           </Title>
-          <Button type="primary" onClick={handleCreate}>
-            {titleCreate}
-          </Button>
+          {titleCreate && (
+            <Button type="primary" onClick={handleCreate}>
+              {titleCreate}
+            </Button>
+          )}
         </div>
         <div style={gridStyle} className={"ag-theme-quartz"}>
           <AgGridReact

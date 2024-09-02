@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, notification, Tooltip } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageContainer from "../../../components/PageContainer";
 import request from "../../../utils/request";
 import ModalDelete from "../../../components/Modal/delete";
@@ -14,7 +14,8 @@ const ProductPage = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [item, setItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
-
+  const [typeProduct, setTypeProduct] = useState([]);
+  const [dataForm, setDataForm] = useState([]);
   const column = [
     { headerName: "Tên sản phẩm ", field: "name", minWidth: 250 },
     {
@@ -63,69 +64,69 @@ const ProductPage = () => {
     },
   ];
 
-  const dataForm = [
-    {
-      type: "input",
-      field: "name",
-      label: "Tên sản phẩm",
-      rule: [
-        {
-          required: true,
-          message: "Trường tên sản phẩm không được bỏ trống!",
-        },
-      ],
-    },
-    {
-      type: "select",
-      field: "type_product_id",
-      label: "Loại sản phẩm",
-      rule: [
-        {
-          required: true,
-          message: "Trường loại sản phẩm không được bỏ trống!",
-        },
-      ],
-      options: [
-        {
-          value: "1",
-          label: "Apple",
-        },
-        {
-          value: "2",
-          label: "Sony",
-        },
-        {
-          value: "3",
-          label: "Android",
-        },
-        {
-          value: "4",
-          label: "Nokia",
-        },
-      ],
-    },
-    {
-      type: "inputNumber",
-      field: "price",
-      label: "Giá tiền",
-    },
-    {
-      type: "upload",
-      field: "image",
-      label: "Ảnh sản phẩm",
-      fileList: [],
-    },
-    {
-      type: "textArea",
-      field: "description",
-      label: "Mô tả",
-    },
-    {
-      type: "inputNumber",
-      field: "so_luong",
-      label: "Số lượng hàng",
-    },
-  ];
+  useEffect(() => {
+    const dataForm = [
+      {
+        type: "input",
+        field: "name",
+        label: "Tên sản phẩm",
+        rule: [
+          {
+            required: true,
+            message: "Trường tên sản phẩm không được bỏ trống!",
+          },
+        ],
+      },
+      {
+        type: "select",
+        field: "type_product_id",
+        label: "Loại sản phẩm",
+        rule: [
+          {
+            required: true,
+            message: "Trường loại sản phẩm không được bỏ trống!",
+          },
+        ],
+        options: typeProduct.map((item) => {
+          return {
+            value: item.name,
+            label: item.name,
+          };
+        }),
+      },
+      {
+        type: "inputNumber",
+        field: "price",
+        label: "Giá tiền",
+      },
+      {
+        type: "upload",
+        field: "image",
+        label: "Ảnh sản phẩm",
+        fileList: [],
+      },
+      {
+        type: "textArea",
+        field: "description",
+        label: "Mô tả",
+      },
+      {
+        type: "inputNumber",
+        field: "so_luong",
+        label: "Số lượng hàng",
+      },
+    ];
+    setDataForm(dataForm);
+  }, [typeProduct]);
+
+  useEffect(() => {
+    const getTypeProduct = async () => {
+      const res = await request.get("type-product");
+      res?.data && setTypeProduct(res.data);
+    };
+    getTypeProduct();
+  }, []);
+
   return (
     <>
       {contextHolder}
