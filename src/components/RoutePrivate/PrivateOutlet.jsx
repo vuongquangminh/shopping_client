@@ -18,7 +18,7 @@ function PrivateOutlet({ role }) {
     );
   }
   if (user?.role_name !== role) {
-    return;
+    <Navigate to="/" />;
   }
   // Nếu có người dùng, render các route con; nếu không, chuyển hướng về trang chính
   return user?.role_name === role ? <Outlet /> : <Navigate to="/" />;

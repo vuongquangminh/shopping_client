@@ -13,7 +13,7 @@ const ModalDelete = ({
     const apiDelete = async () => {
       try {
         const res = await request.delete(api);
-        console.log("res: ", res);
+        // console.log("res: ", res);
         apicontext.success({
           message: "Thất bại",
           description: `Xóa ${name} thành công`,

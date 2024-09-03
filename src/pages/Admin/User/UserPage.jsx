@@ -44,7 +44,11 @@ const UserPage = () => {
   const column = [
     { headerName: "Tên người dùng", field: "name" },
     { headerName: "Tên đăng nhập (Email)", field: "email" },
-    { headerName: "Vai trò", field: "role_name" },
+    {
+      headerName: "Vai trò",
+      field: "role_name",
+      cellRenderer: (data) => VaitroCellRender({ data: data?.data?.role_name }),
+    },
     {
       headerName: "Ảnh đại diện",
       field: "avatar",
@@ -366,6 +370,25 @@ const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
       </Tooltip>
     </>
   );
+};
+
+const VaitroCellRender = ({ data }) => {
+  if (!data) {
+    <></>;
+  }
+  switch (data) {
+    case "admin":
+      return "Admin";
+
+    case "nhan_su":
+      return "Nhân sự";
+
+    case "customer":
+      return "Khách hàng";
+
+    default:
+      return data;
+  }
 };
 
 export default UserPage;
