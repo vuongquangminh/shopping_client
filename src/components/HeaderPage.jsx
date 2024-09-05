@@ -14,6 +14,7 @@ import { Button, Dropdown, Menu, Space } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import logo360 from "../assets/360.png";
+import useAuth from "./RoutePrivate/useAuth";
 
 const items = [
   {
@@ -63,19 +64,19 @@ const HeaderPage = ({ urlPath }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [current, setCurrent] = useState(location.pathname);
+  const { user } = useAuth();
 
   const onClick = (e) => {
     setCurrent(e.key);
     navigate(e.key);
   };
   const handleMenuClick = (e) => {
-    console.log("e: ", e);
     switch (e.key) {
       case "infor":
-        // Xử lý khi nhấp vào Profile
+        navigate(`/admin/user/${user.id}`);
         break;
       case "password":
-        // Xử lý khi nhấp vào Settings
+        navigate("/admin/doi-mat-khau");
         break;
       case "logout":
         localStorage.removeItem("authToken");

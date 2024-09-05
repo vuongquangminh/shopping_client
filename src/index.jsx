@@ -5,17 +5,23 @@ import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-import DetailOrderPage from "./pages/Admin/Order/DetailOrderPage.jsx";
-import DoanhThuPage from "./pages/Admin/DoanhThu/DoanhThupage.jsx";
+
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
 const ErrorPage = lazy(() => import("./components/error-page.jsx"));
 const UserPage = lazy(() => import("./pages/Admin/User/UserPage.jsx"));
 const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
-
 const ProductPage = lazy(() => import("./pages/Admin/Product/ProductPage.jsx"));
 const TypeProductPage = lazy(() =>
   import("./pages/Admin/Product/TypeProductPage.jsx")
+);
+const TaiKhoanPage = lazy(() => import("./pages/Admin/TaiKhoan.jsx"));
+const DoiMatKhau = lazy(() => import("./pages/Admin/DoiMatKhau.jsx"));
+const DoanhThuPage = lazy(() =>
+  import("./pages/Admin/DoanhThu/DoanhThupage.jsx")
+);
+const DetailOrderPage = lazy(() =>
+  import("./pages/Admin/Order/DetailOrderPage.jsx")
 );
 
 const OrderPage = lazy(() => import("./pages/Admin/Order/OrderPage.jsx"));
@@ -84,6 +90,14 @@ const router = createBrowserRouter([
       {
         path: "doanh-thu/product",
         element: <DoanhThuPage />,
+      },
+      {
+        path: "doi-mat-khau",
+        element: <DoiMatKhau />,
+      },
+      {
+        path: "tai-khoan",
+        element: <TaiKhoanPage />,
       },
     ],
   },

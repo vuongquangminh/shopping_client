@@ -12,7 +12,7 @@ import request from "../../../utils/request";
 import { useParams } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
-import CreateNEdit from "../../../components/Modal/CreateNEdit";
+import CreateNEditHasFile from "../../../components/Modal/CreateNEditHasFile";
 
 const DetailPage = () => {
   const params = useParams();
@@ -20,7 +20,8 @@ const DetailPage = () => {
   const [description, setDescription] = useState([]);
   const [apicontext, contextHolder] = notification.useNotification();
   const [show, setShow] = useState(false);
-
+  const [dataForm, setDataForm] = useState([]);
+  const [keyRender, setKeyRender] = useState(0);
   useEffect(() => {
     const getData = async () => {
       try {
@@ -34,7 +35,22 @@ const DetailPage = () => {
       }
     };
     getData();
-  }, []);
+  }, [keyRender, show]);
+
+  const vaiTro = [
+    {
+      value: "admin",
+      label: "Admin",
+    },
+    {
+      value: "nhan_su",
+      label: "Nhân sự",
+    },
+    {
+      value: "customer",
+      label: "Khách hàng",
+    },
+  ];
 
   useEffect(() => {
     const items = [
@@ -60,14 +76,70 @@ const DetailPage = () => {
       },
       {
         key: "5",
-        label: "Đại chỉ",
+        label: "Địa chỉ",
         children: <p>{data?.address}</p>,
       },
     ];
-
+    const dataForm = [
+      {
+        type: "upload",
+        field: "avatar",
+        label: "Ảnh đại diện",
+        fileList: [],
+      },
+      {
+        type: "input",
+        field: "name",
+        label: "Tên người dùng",
+        rule: [
+          {
+            required: true,
+            message: "Trường tên sản phẩm không được bỏ trống!",
+          },
+        ],
+      },
+      {
+        type: "input",
+        field: "email",
+        label: "Tên đang nhập (Email)",
+        rule: [
+          {
+            required: true,
+            message: "Trường loại sản phẩm không được bỏ trống!",
+          },
+        ],
+      },
+      {
+        type: "select",
+        field: "role_name",
+        label: "Vai trò",
+        options: vaiTro.map((item) => {
+          return {
+            value: item.value,
+            label: item.label,
+          };
+        }),
+      },
+      {
+        type: "input",
+        field: "phone",
+        label: "Số điện thoại",
+        fileList: [],
+      },
+      {
+        type: "input",
+        field: "address",
+        label: "Địa chỉ",
+      },
+    ];
+    setDataForm(dataForm);
     setDescription(items);
-  }, [data]);
+  }, [data, show]);
 
+  const handleEdit = () => {
+    setShow(true);
+    console.log("data: ", data);
+  };
   return (
     <>
       {contextHolder}
@@ -107,9 +179,20 @@ const DetailPage = () => {
           <Descriptions title="Thông tin" items={description} />
         </div>
 
-        <CreateNEdit show={show} setShow={setShow} />
+        <CreateNEditHasFile
+          show={show}
+          setShow={setShow}
+          isEdit={true}
+          dataForm={dataForm}
+          item={{ ...data, img: data?.avatar }}
+          apicontext={apicontext}
+          titleEdit={"Chỉnh sửa thông tin cá nhân"}
+          setKeyRender={setKeyRender}
+          apiEdit={""}
+          fileName="avatars"
+        />
         <div className="flex justify-end">
-          <Button type="primary" onClick={() => setShow(true)}>
+          <Button type="primary" onClick={handleEdit}>
             Sửa
           </Button>
         </div>

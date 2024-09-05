@@ -146,7 +146,7 @@ const ProductPage = () => {
         setShow={setIsModalOpen}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
-        item={item}
+        item={{ ...item, img: item?.image }}
         setItem={setItem}
         apicontext={apicontext}
         dataForm={dataForm}

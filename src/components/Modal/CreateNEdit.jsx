@@ -51,8 +51,8 @@ const CreateNEdit = ({
       });
     } finally {
       setShow(false);
-      setIsEdit(false);
-      setItem(undefined);
+      setIsEdit && setIsEdit(false);
+      setItem && setItem(undefined);
       setKeyRender(Math.random());
       form.resetFields();
     }
@@ -60,7 +60,7 @@ const CreateNEdit = ({
 
   const handleCancel = () => {
     setShow(false);
-    setIsEdit(false);
+    setIsEdit && setIsEdit(false);
     form.resetFields();
   };
 

@@ -79,8 +79,8 @@ const CreateNEditHasFile = ({
       });
     } finally {
       setShow(false);
-      setIsEdit(false);
-      setItem(undefined);
+      setIsEdit && setIsEdit(false);
+      setItem && setItem(undefined);
       setFileList([]);
       setKeyRender(Math.random());
       form.resetFields();
@@ -89,7 +89,7 @@ const CreateNEditHasFile = ({
 
   const handleCancel = () => {
     setShow(false);
-    setIsEdit(false);
+    setIsEdit && setIsEdit(false);
     form.resetFields();
     setFileList([]);
   };
@@ -351,7 +351,7 @@ const CreateNEditHasFile = ({
             uid: -1, // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
             name: "example.jpg", // Tên tệp
             status: "done", // Trạng thái tệp
-            url: `http://localhost:8000${item?.image}`, // Đường dẫn công khai
+            url: `http://localhost:8000${item?.img}`, // Đường dẫn công khai
           },
         ])
       : setFileList([]);
