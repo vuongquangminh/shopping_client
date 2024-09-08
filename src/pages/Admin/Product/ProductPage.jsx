@@ -142,7 +142,9 @@ const ProductPage = () => {
     <>
       {contextHolder}
       {loading ? (
-        <Spin />
+        <div className="flex justify-center items-center">
+          <Spin />
+        </div>
       ) : (
         <PageContainer
           title="Quản lý sản phẩm"

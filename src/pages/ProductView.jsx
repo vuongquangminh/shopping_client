@@ -33,7 +33,7 @@ const ProductView = () => {
     const getProduct = async () => {
       setLoading(true);
       try {
-        const res = await request.post("list-product", {
+        const res = await request.post("list-product-user", {
           ...paginate,
           search,
         });
@@ -87,7 +87,9 @@ const ProductView = () => {
               <Col span={8}></Col>
             </Row>
             {loading ? (
-              <Spin />
+              <div className="flex justify-center items-center">
+                <Spin />
+              </div>
             ) : (
               <div className="flex flex-wrap gap-4">
                 {data?.product?.map((item) => {

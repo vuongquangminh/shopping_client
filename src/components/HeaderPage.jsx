@@ -36,20 +36,20 @@ const items = [
     children: [
       {
         type: "group",
-        label: "Admin",
+        label: "Sản phẩm",
         children: [
           { label: "Quản lý sản phẩm", key: "/admin/product" },
           { label: "Danh sách sản phẩm", key: "/danh-sach-san-pham" },
         ],
       },
-      {
-        type: "group",
-        label: "Người dùng",
-        children: [
-          // { label: "Danh sách sản phẩm", key: "/danh-sach-san-pham" },
-          { label: "Option 4", key: "setting:4" },
-        ],
-      },
+      // {
+      //   type: "group",
+      //   label: "Người dùng",
+      //   children: [
+      //     // { label: "Danh sách sản phẩm", key: "/danh-sach-san-pham" },
+      //     { label: "Option 4", key: "setting:4" },
+      //   ],
+      // },
     ],
   },
   {

@@ -40,7 +40,9 @@ const DoiMatKhau = () => {
         style={{ height: "500px" }}
       >
         {loading ? (
-          <Spin />
+          <div className="flex justify-center items-center">
+            <Spin />
+          </div>
         ) : (
           <Form
             name="basic"
