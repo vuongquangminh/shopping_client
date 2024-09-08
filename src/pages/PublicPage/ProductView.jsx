@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import LayoutPage from "../components/LayoutPage";
+import LayoutPage from "../../components/LayoutPage";
 import Title from "antd/es/typography/Title";
 import {
   Card,
@@ -12,8 +12,9 @@ import {
   Spin,
 } from "antd";
 import Meta from "antd/es/card/Meta";
-import request from "../utils/request";
-import VNDCellRender from "../utils/vnd";
+import request from "../../utils/request";
+import VNDCellRender from "../../utils/vnd";
+import { Link } from "react-router-dom";
 
 const ProductView = () => {
   const [data, setData] = useState({});
@@ -22,7 +23,7 @@ const ProductView = () => {
   const [apiContext, contextHolder] = notification.useNotification();
   const [paginate, setPaginate] = useState({
     page: 1,
-    pageSize: 1,
+    pageSize: 10,
   });
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
@@ -94,21 +95,23 @@ const ProductView = () => {
               <div className="flex flex-wrap gap-4">
                 {data?.product?.map((item) => {
                   return (
-                    <Card
-                      hoverable
-                      style={{ width: 240 }}
-                      cover={
-                        <img
-                          alt="anh-san-pham"
-                          src={`http://localhost:8000${item.image}`}
+                    <Link to={"" + item.id}>
+                      <Card
+                        hoverable
+                        style={{ width: 240 }}
+                        cover={
+                          <img
+                            alt="anh-san-pham"
+                            src={`http://localhost:8000${item.image}`}
+                          />
+                        }
+                      >
+                        <Meta
+                          title={item.name}
+                          description={VNDCellRender({ data: item.price })}
                         />
-                      }
-                    >
-                      <Meta
-                        title={item.name}
-                        description={VNDCellRender({ data: item.price })}
-                      />
-                    </Card>
+                      </Card>
+                    </Link>
                   );
                 })}
               </div>
@@ -117,8 +120,8 @@ const ProductView = () => {
           <Pagination
             className="flex justify-end"
             showSizeChanger
-            pageSizeOptions={[1, 5, 10, 20]}
-            defaultPageSize={1}
+            pageSizeOptions={[5, 10, 20, 50]}
+            defaultPageSize={10}
             onChange={onChangePage}
             defaultCurrent={paginate.page}
             total={data?.total}
