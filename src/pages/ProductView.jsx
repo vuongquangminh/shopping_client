@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import LayoutPage from "../components/LayoutPage";
 import Title from "antd/es/typography/Title";
 import {
-  Button,
   Card,
   Col,
   Input,
@@ -17,9 +16,14 @@ import request from "../utils/request";
 import VNDCellRender from "../utils/vnd";
 
 const ProductView = () => {
-  const [product, setProduct] = useState([]);
+  const [data, setData] = useState({});
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [apiContext, contextHolder] = notification.useNotification();
+  const [paginate, setPaginate] = useState({
+    page: 1,
+    pageSize: 1,
+  });
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
     []
@@ -29,9 +33,11 @@ const ProductView = () => {
     const getProduct = async () => {
       setLoading(true);
       try {
-        const res = await request.post("list-product");
-        console.log("res: ", res);
-        res?.data && setProduct(res.data);
+        const res = await request.post("list-product", {
+          ...paginate,
+          search,
+        });
+        res?.data && setData(res.data);
       } catch (error) {
         apiContext.error({
           message: "Thất bại",
@@ -42,40 +48,49 @@ const ProductView = () => {
       }
     };
     getProduct();
-  }, []);
+  }, [paginate, search]);
 
+  const onSearch = (value) => {
+    setSearch(value);
+  };
   const onChangePage = (page, pageSize) => {
-    console.log(page, pageSize);
+    setPaginate({
+      page,
+      pageSize,
+    });
   };
   return (
     <>
       {contextHolder}
       <LayoutPage>
-        {loading ? (
-          <Spin />
-        ) : (
-          <>
-            <div style={containerStyle}>
-              <Row className="my-4">
-                <Col span={8}>
-                  <Title
-                    level={2}
-                    className="mr-6"
-                    style={{ marginBottom: "0px" }}
-                  >
-                    Danh sách sản phẩm
-                  </Title>
-                </Col>
-                <Col span={8}>
-                  <Space.Compact className="flex-1">
-                    <Input placeholder="TÌm kiếm" />
-                    <Button type="primary">Tìm kiếm</Button>
-                  </Space.Compact>
-                </Col>
-                <Col span={8}></Col>
-              </Row>
+        <>
+          <div style={containerStyle}>
+            <Row className="my-4">
+              <Col span={8}>
+                <Title
+                  level={2}
+                  className="mr-6"
+                  style={{ marginBottom: "0px" }}
+                >
+                  Danh sách sản phẩm
+                </Title>
+              </Col>
+              <Col span={8}>
+                <Space.Compact className="flex-1">
+                  <Input
+                    placeholder="TÌm kiếm"
+                    onPressEnter={(e) => onSearch(e.target.value)}
+                  />
+                  {/* <Button type="primary" onClick={}>Tìm kiếm</Button> */}
+                </Space.Compact>
+              </Col>
+              <Col span={8}></Col>
+            </Row>
+            {loading ? (
+              <Spin />
+            ) : (
               <div className="flex flex-wrap gap-4">
-                {product.map((item) => {
+                {data?.product?.map((item) => {
                   return (
                     <Card
                       hoverable
@@ -95,16 +110,18 @@ const ProductView = () => {
                   );
                 })}
               </div>
-            </div>
-            <Pagination
-              className="flex justify-end"
-              showSizeChanger
-              onChange={onChangePage}
-              defaultCurrent={3}
-              total={500}
-            />
-          </>
-        )}
+            )}
+          </div>
+          <Pagination
+            className="flex justify-end"
+            showSizeChanger
+            pageSizeOptions={[1, 5, 10, 20]}
+            defaultPageSize={1}
+            onChange={onChangePage}
+            defaultCurrent={paginate.page}
+            total={data?.total}
+          />
+        </>
       </LayoutPage>
     </>
   );
