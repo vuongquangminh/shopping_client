@@ -188,7 +188,7 @@ const DetailPage = () => {
           apicontext={apicontext}
           titleEdit={"Chỉnh sửa thông tin cá nhân"}
           setKeyRender={setKeyRender}
-          apiEdit={""}
+          apiEdit={`user/${data?.id}`}
           fileName="avatars"
         />
         <div className="flex justify-end">

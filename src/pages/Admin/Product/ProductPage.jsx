@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, notification, Tooltip } from "antd";
+import { Button, notification, Spin, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import PageContainer from "../../../components/PageContainer";
 import request from "../../../utils/request";
@@ -16,6 +16,7 @@ const ProductPage = () => {
   const [modalDelete, setModalDelete] = useState(false);
   const [typeProduct, setTypeProduct] = useState([]);
   const [dataForm, setDataForm] = useState([]);
+  const [loading, setLoading] = useState(false);
   const column = [
     { headerName: "Tên sản phẩm ", field: "name", minWidth: 250 },
     {
@@ -121,8 +122,18 @@ const ProductPage = () => {
 
   useEffect(() => {
     const getTypeProduct = async () => {
-      const res = await request.get("type-product");
-      res?.data && setTypeProduct(res.data);
+      setLoading(true);
+      try {
+        const res = await request.get("type-product");
+        res?.data && setTypeProduct(res.data);
+      } catch (error) {
+        apicontext.error({
+          message: "Thất bại",
+          description: "Lấy dữ liệu thất bại!",
+        });
+      } finally {
+        setLoading(false);
+      }
     };
     getTypeProduct();
   }, []);
@@ -130,17 +141,21 @@ const ProductPage = () => {
   return (
     <>
       {contextHolder}
-      <PageContainer
-        title="Quản lý sản phẩm"
-        column={column}
-        api={() => request.get("product")}
-        setIsModalOpen={setIsModalOpen}
-        apicontext={apicontext}
-        key={keyRender}
-        errApi="Lấy thông tin sản phẩm thất bại"
-        titleCreate="Thêm sản phẩm"
-        noData="Không có sản phẩm nào"
-      />
+      {loading ? (
+        <Spin />
+      ) : (
+        <PageContainer
+          title="Quản lý sản phẩm"
+          column={column}
+          api={() => request.post("list-product")}
+          setIsModalOpen={setIsModalOpen}
+          apicontext={apicontext}
+          key={keyRender}
+          errApi="Lấy thông tin sản phẩm thất bại"
+          titleCreate="Thêm sản phẩm"
+          noData="Không có sản phẩm nào"
+        />
+      )}
       <CreateNEditHasFile
         show={isModalOpen}
         setShow={setIsModalOpen}

@@ -3,7 +3,7 @@ import HeaderPage from "./HeaderPage";
 
 const LayoutPage = ({ children }) => {
   return (
-    <Layout className="bg-inherit">
+    <Layout className="bg-inherit mx-5">
       <HeaderPage />
       {children}
       {/* <Footer style={{ backgroundColor: "greenyellow" }}>Footer</Footer> */}

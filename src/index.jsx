@@ -12,6 +12,7 @@ const ErrorPage = lazy(() => import("./components/error-page.jsx"));
 const UserPage = lazy(() => import("./pages/Admin/User/UserPage.jsx"));
 const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
 const ProductPage = lazy(() => import("./pages/Admin/Product/ProductPage.jsx"));
+const ProductView = lazy(() => import("./pages/ProductView.jsx"));
 const TypeProductPage = lazy(() =>
   import("./pages/Admin/Product/TypeProductPage.jsx")
 );
@@ -98,6 +99,15 @@ const router = createBrowserRouter([
       {
         path: "tai-khoan",
         element: <TaiKhoanPage />,
+      },
+    ],
+  },
+  {
+    path: "danh-sach-san-pham",
+    children: [
+      {
+        path: "",
+        element: <ProductView />,
       },
     ],
   },
