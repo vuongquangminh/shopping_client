@@ -92,28 +92,40 @@ const ProductView = () => {
                 <Spin />
               </div>
             ) : (
-              <div className="flex flex-wrap gap-4">
-                {data?.product?.map((item) => {
-                  return (
-                    <Link to={"" + item.id}>
-                      <Card
-                        hoverable
-                        style={{ width: 240 }}
-                        cover={
-                          <img
-                            alt="anh-san-pham"
-                            src={`http://localhost:8000${item.image}`}
+              <div
+                className={
+                  data?.product?.length > 0
+                    ? "flex flex-wrap gap-4"
+                    : "flex justify-center mt-5"
+                }
+              >
+                {data?.product?.length > 0 ? (
+                  data?.product?.map((item) => {
+                    return (
+                      <Link to={"" + item.id}>
+                        <Card
+                          hoverable
+                          style={{ width: 240 }}
+                          cover={
+                            <img
+                              alt="anh-san-pham"
+                              src={`http://localhost:8000${item.image}`}
+                            />
+                          }
+                        >
+                          <Meta
+                            title={item.name}
+                            description={VNDCellRender({ data: item.price })}
                           />
-                        }
-                      >
-                        <Meta
-                          title={item.name}
-                          description={VNDCellRender({ data: item.price })}
-                        />
-                      </Card>
-                    </Link>
-                  );
-                })}
+                        </Card>
+                      </Link>
+                    );
+                  })
+                ) : (
+                  <p className="flex justify-center mt-5">
+                    Không có sản phẩm nào!
+                  </p>
+                )}
               </div>
             )}
           </div>

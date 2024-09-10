@@ -17,6 +17,12 @@ const ProductPage = () => {
   const [typeProduct, setTypeProduct] = useState([]);
   const [dataForm, setDataForm] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [typeProductSelect, setTypeProductSelect] = useState();
+  const [listChips, setListChips] = useState([]);
+  const [listDungLuongs, setListDungLuongs] = useState([]);
+  const [listMauSacs, setMauSacs] = useState([]);
+
   const column = [
     { headerName: "Tên sản phẩm ", field: "name", minWidth: 250 },
     {
@@ -88,6 +94,7 @@ const ProductPage = () => {
             message: "Trường loại sản phẩm không được bỏ trống!",
           },
         ],
+        onChange: setTypeProductSelect,
         options: typeProduct.map((item) => {
           return {
             value: item.id,
@@ -107,6 +114,22 @@ const ProductPage = () => {
         fileList: [],
       },
       {
+        type: "select",
+        field: "camera",
+        label: "Camera",
+      },
+      {
+        type: "select",
+        field: "image",
+        label: "Ảnh sản phẩm",
+      },
+      {
+        type: "select",
+        field: "image",
+        label: "Ảnh sản phẩm",
+      },
+
+      {
         type: "textArea",
         field: "description",
         label: "Mô tả",
@@ -119,6 +142,8 @@ const ProductPage = () => {
     ];
     setDataForm(dataForm);
   }, [typeProduct]);
+
+  console.log("typeProductSelect: ", typeProductSelect);
 
   useEffect(() => {
     const getTypeProduct = async () => {
@@ -135,8 +160,61 @@ const ProductPage = () => {
         setLoading(false);
       }
     };
+    const getDungLuongs = async () => {
+      setLoading(true);
+      try {
+        const res = await request.get("list-dung-luongs");
+        res?.data && setListDungLuongs(res.data);
+      } catch (error) {
+        apicontext.error({
+          message: "Thất bại",
+          description: "Lấy dữ liệu thất bại!",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
     getTypeProduct();
+    getDungLuongs();
   }, []);
+
+  useEffect(() => {
+    const getChips = async () => {
+      setLoading(true);
+      try {
+        const res = await request.post("list-chips", {
+          type_product_id: typeProductSelect,
+        });
+        res?.data && setListChips(res.data);
+      } catch (error) {
+        apicontext.error({
+          message: "Thất bại",
+          description: "Lấy dữ liệu thất bại!",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    const getMauSacs = async () => {
+      setLoading(true);
+      try {
+        const res = await request.post("list-mau-sacs", {
+          type_product_id: typeProductSelect,
+        });
+        res?.data && setMauSacs(res.data);
+      } catch (error) {
+        apicontext.error({
+          message: "Thất bại",
+          description: "Lấy dữ liệu thất bại!",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    typeProductSelect && getChips();
+    typeProductSelect && getMauSacs();
+  }, [typeProductSelect]);
 
   return (
     <>

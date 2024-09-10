@@ -307,6 +307,7 @@ const CreateNEditHasFile = ({
           showSearch
           placeholder={item.placeholder}
           optionFilterProp="label"
+          onChange={(e) => item.onChange(e)}
           filterSort={(optionA, optionB) =>
             (optionA?.label ?? "")
               .toLowerCase()
