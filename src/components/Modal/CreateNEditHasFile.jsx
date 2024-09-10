@@ -308,11 +308,11 @@ const CreateNEditHasFile = ({
           placeholder={item.placeholder}
           optionFilterProp="label"
           onChange={(e) => item.onChange(e)}
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
+          // filterSort={(optionA, optionB) =>
+          //   (optionA?.label ?? "")
+          //     .toLowerCase()
+          //     .localeCompare((optionB?.label ?? "").toLowerCase())
+          // }
           mode={item.mode}
           disabled={item.disabled}
           //option la 1 cap array value-label
