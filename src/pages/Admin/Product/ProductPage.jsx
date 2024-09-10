@@ -114,19 +114,42 @@ const ProductPage = () => {
         fileList: [],
       },
       {
-        type: "select",
+        type: "input",
         field: "camera",
         label: "Camera",
       },
       {
         type: "select",
-        field: "image",
-        label: "Ảnh sản phẩm",
+        field: "chip_id",
+        label: "Chip",
+        options: listChips.map((item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          };
+        }),
       },
       {
         type: "select",
-        field: "image",
-        label: "Ảnh sản phẩm",
+        field: "dung_luong_id",
+        label: "Dung lượng",
+        options: listDungLuongs.map((item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          };
+        }),
+      },
+      {
+        type: "select",
+        field: "dung_luong_id",
+        label: "Màu sắc",
+        options: listMauSacs.map((item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          };
+        }),
       },
 
       {
@@ -141,7 +164,7 @@ const ProductPage = () => {
       },
     ];
     setDataForm(dataForm);
-  }, [typeProduct]);
+  }, [typeProduct, listChips, listDungLuongs, listMauSacs]);
 
   console.log("typeProductSelect: ", typeProductSelect);
 
