@@ -240,11 +240,12 @@ const CreateNEdit = ({
           showSearch
           placeholder={item.placeholder}
           optionFilterProp="label"
-          filterSort={(optionA, optionB) =>
-            (optionA?.label ?? "")
-              .toLowerCase()
-              .localeCompare((optionB?.label ?? "").toLowerCase())
-          }
+          onChange={(e) => item.onChange(e)}
+          // filterSort={(optionA, optionB) =>
+          //   (optionA?.label ?? "")
+          //     .toLowerCase()
+          //     .localeCompare((optionB?.label ?? "").toLowerCase())
+          // }
           mode={item.mode}
           disabled={item.disabled}
           //option la 1 cap array value-label
