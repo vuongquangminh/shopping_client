@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
   FundViewOutlined,
   IssuesCloseOutlined,
@@ -107,6 +107,7 @@ const HeaderPage = ({ urlPath }) => {
         break;
     }
   };
+
   return (
     <>
       <div className="p-5 flex items-center border-b border-solid border-gray-300">
@@ -155,4 +156,4 @@ const HeaderPage = ({ urlPath }) => {
     </>
   );
 };
-export default HeaderPage;
+export default memo(HeaderPage);
