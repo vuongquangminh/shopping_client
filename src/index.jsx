@@ -5,7 +5,7 @@ import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-import ProductViewCustomer from "./pages/User/ProductViewCustomer.jsx";
+import ProductView from "./pages/User/ProductView.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -13,7 +13,7 @@ const ErrorPage = lazy(() => import("./components/error-page.jsx"));
 const UserPage = lazy(() => import("./pages/Admin/User/UserPage.jsx"));
 const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
 const ProductPage = lazy(() => import("./pages/Admin/Product/ProductPage.jsx"));
-const ProductView = lazy(() => import("./pages/PublicPage/ProductView.jsx"));
+const TrangChuPage = lazy(() => import("./pages/PublicPage/TrangChuPage.jsx"));
 const ProductViewDetail = lazy(() =>
   import("./pages/PublicPage/ProductViewDetail.jsx")
 );
@@ -103,15 +103,15 @@ const router = createBrowserRouter([
   },
   {
     path: "trang-chu",
-    element: <ProductView />,
+    element: <TrangChuPage />,
   },
   {
-    element: <PrivateOutlet role="customer" />,
+    element: <PrivateOutlet role={["customer", "admin"]} />,
     errorElement: <ErrorPage />,
     children: [
       {
         path: "danh-sach-san-pham",
-        element: <ProductViewCustomer />,
+        element: <ProductView />,
       },
       {
         path: ":id",

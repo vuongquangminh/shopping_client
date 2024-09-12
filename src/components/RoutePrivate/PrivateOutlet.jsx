@@ -22,7 +22,7 @@ function PrivateOutlet({ role }) {
     <Navigate to="/" />;
   }
   // Nếu có người dùng, render các route con; nếu không, chuyển hướng về trang chính
-  return user?.role_name === role ? <Outlet /> : <ErrorPage />;
+  return role.includes(user?.role_name) ? <Outlet /> : <ErrorPage />;
 }
 
 export default PrivateOutlet;

@@ -80,7 +80,7 @@ const account = [
     icon: <LogoutOutlined />,
   },
 ];
-const HeaderPage = ({ urlPath }) => {
+const HeaderPage = ({ urlPath, noUser }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [current, setCurrent] = useState(location.pathname);
@@ -125,32 +125,34 @@ const HeaderPage = ({ urlPath }) => {
             items={urlPath ? urlPath : items}
             className="grow"
           />
-          <h4 className=" text-end">
-            <Tooltip title="Giỏ hàng">
-              <Button type="text">
-                <ShoppingCartOutlined />
-              </Button>
-            </Tooltip>
-            <Tooltip title="Đơn hàng" className="mx-2">
-              <Button type="text">
-                <SendOutlined />
-              </Button>
-            </Tooltip>
-            <Space wrap>
-              <Dropdown
-                menu={{
-                  items: account,
-                  onClick: handleMenuClick,
-                }}
-                placement="bottomRight"
-                arrow
-              >
-                <Button>
-                  <UserOutlined />
+          {!noUser && (
+            <h4 className=" text-end">
+              <Tooltip title="Giỏ hàng">
+                <Button type="text">
+                  <ShoppingCartOutlined />
                 </Button>
-              </Dropdown>
-            </Space>
-          </h4>
+              </Tooltip>
+              <Tooltip title="Đơn hàng" className="mx-2">
+                <Button type="text">
+                  <SendOutlined />
+                </Button>
+              </Tooltip>
+              <Space wrap>
+                <Dropdown
+                  menu={{
+                    items: account,
+                    onClick: handleMenuClick,
+                  }}
+                  placement="bottomRight"
+                  arrow
+                >
+                  <Button>
+                    <UserOutlined />
+                  </Button>
+                </Dropdown>
+              </Space>
+            </h4>
+          )}
         </div>
       </div>
     </>
