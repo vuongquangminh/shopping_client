@@ -95,7 +95,7 @@ const ProductView = () => {
               <div
                 className={
                   data?.product?.length > 0
-                    ? "flex flex-wrap gap-4"
+                    ? "flex flex-wrap gap-4 justify-center"
                     : "flex justify-center mt-5"
                 }
               >
