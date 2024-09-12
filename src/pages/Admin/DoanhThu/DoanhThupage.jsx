@@ -28,7 +28,7 @@ const DoanhThuPage = () => {
 
   useEffect(() => {
     const getListProduct = async () => {
-      const res = await request.get("product");
+      const res = await request.post("list-product");
       console.log("res: ", res);
       const dataProduct = res?.data.map((item) => item.name);
       const dataSoLuong = res?.data.map((item) => item.so_luong);

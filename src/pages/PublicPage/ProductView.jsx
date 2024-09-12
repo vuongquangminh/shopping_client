@@ -26,7 +26,7 @@ const ProductView = () => {
     pageSize: 10,
   });
   const containerStyle = useMemo(
-    () => ({ width: "100%", height: "100ch" }),
+    () => ({ width: "100%", minHeight: "500px" }),
     []
   );
 
@@ -104,6 +104,7 @@ const ProductView = () => {
                     return (
                       <Link to={"" + item.id}>
                         <Card
+                          className="shadow"
                           hoverable
                           style={{ width: 240 }}
                           cover={
@@ -130,7 +131,7 @@ const ProductView = () => {
             )}
           </div>
           <Pagination
-            className="flex justify-end"
+            className="flex justify-end my-4"
             showSizeChanger
             pageSizeOptions={[5, 10, 20, 50]}
             defaultPageSize={10}

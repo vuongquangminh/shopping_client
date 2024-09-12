@@ -164,12 +164,27 @@ const DetailPage = () => {
           <Card
             style={{ width: 300 }}
             cover={
-              <img alt="example" src={`http://localhost:8000${data?.avatar}`} />
+              <img
+                alt="example"
+                src={
+                  data?.avatar
+                    ? `http://localhost:8000${data?.avatar}`
+                    : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
+                }
+              />
             }
             actions={[<EditOutlined key="edit" />]}
           >
             <Meta
-              avatar={<Avatar src={`http://localhost:8000${data?.avatar}`} />}
+              avatar={
+                <Avatar
+                  src={
+                    data?.avatar
+                      ? `http://localhost:8000${data?.avatar}`
+                      : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
+                  }
+                />
+              }
               title={data?.name}
               description={data?.role_name}
             />

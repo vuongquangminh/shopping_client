@@ -19,7 +19,6 @@ const ProductViewDetail = lazy(() =>
 const TypeProductPage = lazy(() =>
   import("./pages/Admin/Product/TypeProductPage.jsx")
 );
-const TaiKhoanPage = lazy(() => import("./pages/Admin/TaiKhoan.jsx"));
 const DoiMatKhau = lazy(() => import("./pages/Admin/DoiMatKhau.jsx"));
 const DoanhThuPage = lazy(() =>
   import("./pages/Admin/DoanhThu/DoanhThupage.jsx")
@@ -98,10 +97,6 @@ const router = createBrowserRouter([
       {
         path: "doi-mat-khau",
         element: <DoiMatKhau />,
-      },
-      {
-        path: "tai-khoan",
-        element: <TaiKhoanPage />,
       },
     ],
   },
