@@ -5,6 +5,7 @@ import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
+import ProductViewCustomer from "./pages/User/ProductViewCustomer.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -101,11 +102,16 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "danh-sach-san-pham",
+    path: "trang-chu",
+    element: <ProductView />,
+  },
+  {
+    element: <PrivateOutlet role="customer" />,
+    errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
-        element: <ProductView />,
+        path: "danh-sach-san-pham",
+        element: <ProductViewCustomer />,
       },
       {
         path: ":id",

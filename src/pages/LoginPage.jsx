@@ -15,7 +15,18 @@ const LoginPage = () => {
         const res = await request.post("auth/login", values);
         const token = res.data.access_token;
         localStorage.setItem("authToken", token);
-        navigate("/admin/user");
+        const fetchUser = async () => {
+          const response = await request.get("auth/user");
+          switch (response?.data?.role_name) {
+            case "admin":
+              return navigate("/admin/user");
+            case "customer":
+              return navigate("/danh-sach-san-pham");
+            default:
+              return navigate("/");
+          }
+        };
+        fetchUser();
       } catch (err) {
         api.error({
           message: "Đăng nhập thất bại",

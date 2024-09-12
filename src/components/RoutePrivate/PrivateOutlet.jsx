@@ -1,6 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import useAuth from "./useAuth"; // Đảm bảo đường dẫn đúng với file chứa hook
 import { Spin } from "antd";
+import ErrorPage from "../error-page";
 
 function PrivateOutlet({ role }) {
   const { user, loading } = useAuth();
@@ -21,7 +22,7 @@ function PrivateOutlet({ role }) {
     <Navigate to="/" />;
   }
   // Nếu có người dùng, render các route con; nếu không, chuyển hướng về trang chính
-  return user?.role_name === role ? <Outlet /> : <Navigate to="/" />;
+  return user?.role_name === role ? <Outlet /> : <ErrorPage />;
 }
 
 export default PrivateOutlet;
