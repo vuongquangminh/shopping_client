@@ -1,30 +1,33 @@
 import { BarChartOutlined } from "@ant-design/icons";
 import HeaderPage from "../../../components/HeaderPage";
 import { CChart } from "@coreui/react-chartjs";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import request from "../../../utils/request";
 
 const DoanhThuPage = () => {
   const [listProduct, setListProduct] = useState([]);
   const [soLuong, setSoLuong] = useState([]);
 
-  const data = [
-    {
-      label: "Doanh thu sản phẩm",
-      key: "/admin/doanh-thu/product",
-      icon: <BarChartOutlined />,
-    },
-    {
-      label: "Doanh thu sản phẩm theo tháng",
-      key: "/admin/doanh-thu/product/month",
-      icon: <BarChartOutlined />,
-    },
-    {
-      label: "Doanh thu sản phẩm theo năm",
-      key: "/admin/doanh-thu/product/year",
-      icon: <BarChartOutlined />,
-    },
-  ];
+  const data = useMemo(() => {
+    const results = [
+      {
+        label: "Doanh thu sản phẩm",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Doanh thu sản phẩm theo tháng",
+        key: "/admin/doanh-thu/product/month",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Doanh thu sản phẩm theo năm",
+        key: "/admin/doanh-thu/product/year",
+        icon: <BarChartOutlined />,
+      },
+    ];
+    return results;
+  }, []);
 
   useEffect(() => {
     const getListProduct = async () => {
@@ -37,7 +40,6 @@ const DoanhThuPage = () => {
     };
     getListProduct();
   }, []);
-
   return (
     <>
       <HeaderPage urlPath={data} />
