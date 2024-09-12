@@ -142,7 +142,7 @@ const ProductPage = () => {
       },
       {
         type: "select",
-        field: "dung_luong_id",
+        field: "mau_sac_id",
         label: "Màu sắc",
         options: listMauSacs.map((item) => {
           return {
