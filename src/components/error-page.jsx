@@ -1,5 +1,5 @@
 import { Button, Result } from "antd";
-import { useRouteError } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -10,7 +10,11 @@ export default function ErrorPage() {
       status="404"
       title="404"
       subTitle="Sorry, the page you visited does not exist."
-      extra={<Button type="primary">Back Home</Button>}
+      extra={
+        <Link to={"/"}>
+          <Button type="primary">Back Home</Button>
+        </Link>
+      }
     />
   );
 }

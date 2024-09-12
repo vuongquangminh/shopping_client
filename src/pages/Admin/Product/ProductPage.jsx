@@ -166,8 +166,6 @@ const ProductPage = () => {
     setDataForm(dataForm);
   }, [typeProduct, listChips, listDungLuongs, listMauSacs]);
 
-  console.log("typeProductSelect: ", typeProductSelect);
-
   useEffect(() => {
     const getTypeProduct = async () => {
       setLoading(true);
