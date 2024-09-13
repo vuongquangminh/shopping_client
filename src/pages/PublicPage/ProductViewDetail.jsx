@@ -1,132 +1,169 @@
+import { Avatar, Breadcrumb, Card, notification } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import LayoutPage from "../../components/LayoutPage";
-import Title from "antd/es/typography/Title";
-import {
-  Card,
-  Col,
-  Input,
-  notification,
-  Pagination,
-  Row,
-  Space,
-  Spin,
-} from "antd";
+import { useParams } from "react-router-dom";
+import { BarChartOutlined, EditOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
+import HeaderPage from "../../components/HeaderPage";
 import request from "../../utils/request";
-import VNDCellRender from "../../utils/vnd";
 
-const ProductViewDetail = () => {
-  const [data, setData] = useState({});
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [apiContext, contextHolder] = notification.useNotification();
-  const [paginate, setPaginate] = useState({
-    page: 1,
-    pageSize: 10,
-  });
-  const containerStyle = useMemo(
-    () => ({ width: "100%", height: "100ch" }),
-    []
-  );
-
+const DetailPage = () => {
+  const params = useParams();
+  const [data, setData] = useState();
+  const [description, setDescription] = useState([]);
+  const [apicontext, contextHolder] = notification.useNotification();
   useEffect(() => {
-    const getProduct = async () => {
-      setLoading(true);
+    const getData = async () => {
       try {
-        const res = await request.post("list-product-user", {
-          ...paginate,
-          search,
-        });
-        res?.data && setData(res.data);
+        const res = await request.get(`product/${params.id}`);
+        res.data && setData(res.data);
       } catch (error) {
-        apiContext.error({
-          message: "Thất bại",
+        apicontext.error({
+          message: "Thành bại",
           description: "Lấy dữ liệu thất bại!",
         });
-      } finally {
-        setLoading(false);
       }
     };
-    getProduct();
-  }, [paginate, search]);
+    getData();
+  }, []);
 
-  const onSearch = (value) => {
-    setSearch(value);
-  };
-  const onChangePage = (page, pageSize) => {
-    setPaginate({
-      page,
-      pageSize,
-    });
-  };
+  useEffect(() => {
+    const items = [
+      {
+        key: "1",
+        label: "Tên sản phẩm",
+        children: data?.name,
+      },
+      {
+        key: "2",
+        label: "Loại thương hiệu",
+        children: data?.type_product_id,
+      },
+      {
+        key: "3",
+        label: "Chip",
+        children: data?.chip_id,
+      },
+      {
+        key: "4",
+        label: "Chống nước",
+        children: data?.chong_nuoc,
+      },
+      {
+        key: "5",
+        label: "Màn hình",
+        children: data?.man_hinh,
+      },
+      {
+        key: "6",
+        label: "Camera",
+        children: data?.camera,
+      },
+
+      {
+        key: "7",
+        label: "Pin",
+        children: data?.pin,
+      },
+      {
+        key: "8",
+        label: "Bảo mật",
+        children: data?.bao_mat,
+      },
+      {
+        key: "9",
+        label: "Mô tả",
+        children: data?.description,
+      },
+    ];
+    setDescription(items);
+  }, [data]);
+  const pathHeader = useMemo(() => {
+    const results = [
+      {
+        label: "Danh sách sản phẩm",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Khuyến mại",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Đơn hàng",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+    ];
+    return results;
+  }, []);
+
+  console.log("data: ", data);
   return (
     <>
       {contextHolder}
-      <LayoutPage>
-        <>
-          <div style={containerStyle}>
-            <Row className="my-4">
-              <Col span={8}>
-                <Title
-                  level={2}
-                  className="mr-6"
-                  style={{ marginBottom: "0px" }}
-                >
-                  Danh sách sản phẩm22
-                </Title>
-              </Col>
-              <Col span={8}>
-                <Space.Compact className="flex-1">
-                  <Input
-                    placeholder="TÌm kiếm"
-                    onPressEnter={(e) => onSearch(e.target.value)}
-                  />
-                  {/* <Button type="primary" onClick={}>Tìm kiếm</Button> */}
-                </Space.Compact>
-              </Col>
-              <Col span={8}></Col>
-            </Row>
-            {loading ? (
-              <div className="flex justify-center items-center">
-                <Spin />
+      <HeaderPage urlPath={pathHeader} />
+
+      <div className="m-5">
+        <Breadcrumb
+          items={[
+            {
+              title: "Danh sách sản phẩm",
+              href: "/danh-sach-san-pham",
+            },
+            {
+              title: "Chi tiết",
+            },
+            {
+              title: data?.name,
+            },
+          ]}
+        />
+        <div className="flex justify-center mt-8">
+          <Card
+            style={{ width: 300 }}
+            cover={
+              <img
+                alt="example"
+                src={
+                  data?.avatar
+                    ? `http://localhost:8000${data?.avatar}`
+                    : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
+                }
+              />
+            }
+            actions={[<EditOutlined key="edit" />]}
+          >
+            <Meta
+              avatar={
+                <Avatar
+                  src={
+                    data?.avatar
+                      ? `http://localhost:8000${data?.avatar}`
+                      : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
+                  }
+                />
+              }
+              title={data?.name}
+              description={data?.role_name}
+            />
+          </Card>
+        </div>
+        <div className="my-5 p-5 bg-slate-200 rounded">
+          {description &&
+            description.map((item) => (
+              <div className="flex">
+                <p className="min-w-40">{item.label}</p>
+                <p>
+                  {": "}
+                  {item.children}
+                </p>
               </div>
-            ) : (
-              <div className="flex flex-wrap gap-4">
-                {data?.product?.map((item) => {
-                  return (
-                    <Card
-                      hoverable
-                      style={{ width: 240 }}
-                      cover={
-                        <img
-                          alt="anh-san-pham"
-                          src={`http://localhost:8000${item.image}`}
-                        />
-                      }
-                    >
-                      <Meta
-                        title={item.name}
-                        description={VNDCellRender({ data: item.price })}
-                      />
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          <Pagination
-            className="flex justify-end"
-            showSizeChanger
-            pageSizeOptions={[5, 10, 20, 50]}
-            defaultPageSize={10}
-            onChange={onChangePage}
-            defaultCurrent={paginate.page}
-            total={data?.total}
-          />
-        </>
-      </LayoutPage>
+            ))}
+        </div>
+      </div>
     </>
   );
 };
 
-export default ProductViewDetail;
+export default DetailPage;

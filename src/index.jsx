@@ -111,11 +111,16 @@ const router = createBrowserRouter([
     children: [
       {
         path: "danh-sach-san-pham",
-        element: <ProductView />,
-      },
-      {
-        path: ":id",
-        element: <ProductViewDetail />,
+        children: [
+          {
+            path: "",
+            element: <ProductView />,
+          },
+          {
+            path: ":id",
+            element: <ProductViewDetail />,
+          },
+        ],
       },
     ],
   },

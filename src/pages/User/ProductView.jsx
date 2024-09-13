@@ -15,6 +15,7 @@ import Meta from "antd/es/card/Meta";
 import request from "../../utils/request";
 import VNDCellRender from "../../utils/vnd";
 import { Link } from "react-router-dom";
+import { BarChartOutlined } from "@ant-design/icons";
 
 const ProductView = () => {
   const [data, setData] = useState({});
@@ -60,10 +61,30 @@ const ProductView = () => {
       pageSize,
     });
   };
+  const pathHeader = useMemo(() => {
+    const results = [
+      {
+        label: "Danh sách sản phẩm",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Khuyến mại",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Đơn hàng",
+        key: "/admin/doanh-thu/product",
+        icon: <BarChartOutlined />,
+      },
+    ];
+    return results;
+  }, []);
   return (
     <>
       {contextHolder}
-      <LayoutPage>
+      <LayoutPage urlPathHeader={pathHeader}>
         <>
           <div style={containerStyle}>
             <Row className="my-4">
