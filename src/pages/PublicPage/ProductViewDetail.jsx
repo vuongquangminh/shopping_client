@@ -1,82 +1,107 @@
-import { Avatar, Breadcrumb, Card, notification } from "antd";
+import { Avatar, Breadcrumb, Card, ColorPicker } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import { BarChartOutlined, EditOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import HeaderPage from "../../components/HeaderPage";
 import request from "../../utils/request";
 
 const DetailPage = () => {
-  const params = useParams();
-  const [data, setData] = useState();
+  const loader = useLoaderData();
+  const [chips, setChips] = useState([]);
+  const [dungLuongs, setDungLuongs] = useState([]);
+  const [mauSacs, setMauSacs] = useState([]);
   const [description, setDescription] = useState([]);
-  const [apicontext, contextHolder] = notification.useNotification();
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await request.get(`product/${params.id}`);
-        res.data && setData(res.data);
-      } catch (error) {
-        apicontext.error({
-          message: "Thành bại",
-          description: "Lấy dữ liệu thất bại!",
-        });
-      }
-    };
-    getData();
-  }, []);
 
   useEffect(() => {
-    const items = [
+    const getListChips = async () => {
+      const res = await request.post("list-chips", {
+        type_product_id: loader.data[0].type_product_id,
+      });
+      res.data && setChips(res.data);
+    };
+    const getListDungLuongs = async () => {
+      const res = await request.get("list-dung-luongs", {
+        type_product_id: loader.data[0].type_product_id,
+      });
+      res.data && setDungLuongs(res.data);
+    };
+    const getListMauSacs = async () => {
+      const res = await request.post("list-mau-sacs", {
+        type_product_id: loader.data[0].type_product_id,
+      });
+      res.data && setMauSacs(res.data);
+    };
+    getListChips();
+    getListDungLuongs();
+    getListMauSacs();
+  }, []);
+  console.log("mauSac: ", mauSacs);
+  useEffect(() => {
+    const description = [
       {
         key: "1",
         label: "Tên sản phẩm",
-        children: data?.name,
+        children: loader.data[0]?.name,
       },
       {
         key: "2",
         label: "Loại thương hiệu",
-        children: data?.type_product_id,
+        children: loader.data[0]?.type_product.name,
       },
       {
         key: "3",
         label: "Chip",
-        children: data?.chip_id,
+        children: loader.data[0]?.chip.name,
       },
       {
         key: "4",
-        label: "Chống nước",
-        children: data?.chong_nuoc,
+        label: "Màn hình",
+        children: loader.data[0]?.man_hinh,
       },
+
       {
         key: "5",
-        label: "Màn hình",
-        children: data?.man_hinh,
+        label: "Dung lượng",
+        children: loader.data[0]?.man_hinh,
       },
       {
         key: "6",
         label: "Camera",
-        children: data?.camera,
+        children: loader.data[0]?.camera,
       },
 
       {
         key: "7",
         label: "Pin",
-        children: data?.pin,
+        children: loader.data[0]?.pin,
       },
       {
         key: "8",
         label: "Bảo mật",
-        children: data?.bao_mat,
+        children: loader.data[0]?.bao_mat,
       },
       {
         key: "9",
+        label: "Chống nước",
+        children: loader.data[0]?.chong_nuoc,
+      },
+      {
+        key: "10",
+        label: "Màu sắc",
+        children: mauSacs?.map((item) => {
+          return <ColorPicker value="#1677ff" disabled />;
+        }),
+      },
+      {
+        key: "11",
         label: "Mô tả",
-        children: data?.description,
+        children: loader.data[0]?.description,
       },
     ];
-    setDescription(items);
-  }, [data]);
+    setDescription(description);
+  }, [mauSacs, dungLuongs]);
+
   const pathHeader = useMemo(() => {
     const results = [
       {
@@ -98,10 +123,8 @@ const DetailPage = () => {
     return results;
   }, []);
 
-  console.log("data: ", data);
   return (
     <>
-      {contextHolder}
       <HeaderPage urlPath={pathHeader} />
 
       <div className="m-5">
@@ -115,7 +138,7 @@ const DetailPage = () => {
               title: "Chi tiết",
             },
             {
-              title: data?.name,
+              title: loader.data[0]?.name,
             },
           ]}
         />
@@ -126,8 +149,8 @@ const DetailPage = () => {
               <img
                 alt="example"
                 src={
-                  data?.avatar
-                    ? `http://localhost:8000${data?.avatar}`
+                  loader.data[0]?.image
+                    ? `http://localhost:8000${loader.data[0]?.image}`
                     : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
                 }
               />
@@ -138,14 +161,14 @@ const DetailPage = () => {
               avatar={
                 <Avatar
                   src={
-                    data?.avatar
-                      ? `http://localhost:8000${data?.avatar}`
+                    loader.data[0]?.image
+                      ? `http://localhost:8000${loader.data[0]?.image}`
                       : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
                   }
                 />
               }
-              title={data?.name}
-              description={data?.role_name}
+              title={loader.data[0]?.name}
+              description={loader.data[0]?.role_name}
             />
           </Card>
         </div>

@@ -115,8 +115,33 @@ const ProductPage = () => {
       },
       {
         type: "input",
+        field: "man_hinh",
+        label: "Màn hình",
+      },
+      {
+        type: "input",
         field: "camera",
         label: "Camera",
+      },
+      {
+        type: "select",
+        field: "bao_mat",
+        label: "Bảo mật ( vân tay, khuôn mặt)",
+        options: [
+          {
+            value: "van_tay",
+            label: "Vân tay",
+          },
+          {
+            value: "khuon_mat",
+            label: "Khuôn mặt",
+          },
+        ],
+      },
+      {
+        type: "input",
+        field: "pin",
+        label: "Dung lượng pin",
       },
       {
         type: "select",
@@ -141,15 +166,9 @@ const ProductPage = () => {
         }),
       },
       {
-        type: "select",
-        field: "mau_sac_id",
+        type: "color",
+        field: "mau_sac",
         label: "Màu sắc",
-        options: listMauSacs.map((item) => {
-          return {
-            value: item.id,
-            label: item.name,
-          };
-        }),
       },
 
       {

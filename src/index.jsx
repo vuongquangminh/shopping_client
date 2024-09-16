@@ -5,7 +5,7 @@ import { lazy } from "react";
 
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
-import ProductView from "./pages/User/ProductView.jsx";
+import request from "./utils/request.js";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -14,6 +14,7 @@ const UserPage = lazy(() => import("./pages/Admin/User/UserPage.jsx"));
 const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
 const ProductPage = lazy(() => import("./pages/Admin/Product/ProductPage.jsx"));
 const TrangChuPage = lazy(() => import("./pages/PublicPage/TrangChuPage.jsx"));
+const ProductView = lazy(() => import("./pages/User/ProductView.jsx"));
 const ProductViewDetail = lazy(() =>
   import("./pages/PublicPage/ProductViewDetail.jsx")
 );
@@ -119,6 +120,9 @@ const router = createBrowserRouter([
           {
             path: ":id",
             element: <ProductViewDetail />,
+            loader: async ({ params }) => {
+              return request.get(`product/${params.id}`);
+            },
           },
         ],
       },

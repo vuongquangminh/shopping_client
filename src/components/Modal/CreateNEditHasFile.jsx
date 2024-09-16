@@ -100,6 +100,12 @@ const CreateNEditHasFile = ({
     setFileList(newFileList);
   };
 
+  const handleColorChange = (color) => {
+    form.setFieldsValue({
+      mau_sac: color.toHexString(), // Convert color to hex string
+    });
+  };
+
   const uploadButton = (
     <button
       style={{
@@ -274,6 +280,7 @@ const CreateNEditHasFile = ({
           defaultValue={item.defaultValue}
           disabled={item.disabled}
           size={item.size}
+          onChange={handleColorChange}
         />
       );
     } else if (item.type === "date") {
@@ -364,6 +371,7 @@ const CreateNEditHasFile = ({
         title={isEdit ? titleEdit : titleCreate}
         open={show}
         onCancel={handleCancel}
+        centered
         footer={null} // Using null instead of an empty array
       >
         <Form
@@ -372,6 +380,8 @@ const CreateNEditHasFile = ({
           name="validateOnly"
           layout="vertical"
           autoComplete="off"
+          className="overflow-y-scroll"
+          style={{ maxHeight: "500px" }}
         >
           {dataForm?.map((item) => {
             return (
@@ -385,8 +395,7 @@ const CreateNEditHasFile = ({
               </Form.Item>
             );
           })}
-
-          <Form.Item className="text-end">
+          <Form.Item className="text-end mt-5">
             <Space>
               <Button onClick={handleCancel}>Hủy</Button>
               <Button htmlType="submit" type="primary">

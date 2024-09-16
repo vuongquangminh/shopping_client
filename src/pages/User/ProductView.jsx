@@ -65,17 +65,17 @@ const ProductView = () => {
     const results = [
       {
         label: "Danh sách sản phẩm",
-        key: "/admin/doanh-thu/product",
+        key: "/danh-sach-san-pham",
         icon: <BarChartOutlined />,
       },
       {
         label: "Khuyến mại",
-        key: "/admin/doanh-thu/product",
+        key: "/khuyen-mai",
         icon: <BarChartOutlined />,
       },
       {
         label: "Đơn hàng",
-        key: "/admin/doanh-thu/product",
+        key: "/don-hang",
         icon: <BarChartOutlined />,
       },
     ];
