@@ -89,9 +89,7 @@ const DetailPage = () => {
       {
         key: "10",
         label: "Màu sắc",
-        children: mauSacs?.map((item) => {
-          return <ColorPicker value="#1677ff" disabled />;
-        }),
+        children: <ColorPicker value={loader.data[0]?.mau_sac} disabled />,
       },
       {
         key: "11",

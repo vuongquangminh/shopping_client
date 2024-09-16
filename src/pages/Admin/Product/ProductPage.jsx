@@ -145,6 +145,21 @@ const ProductPage = () => {
       },
       {
         type: "select",
+        field: "chong_nuoc",
+        label: "Chống nươc",
+        options: [
+          {
+            value: "co",
+            label: "Có",
+          },
+          {
+            value: "khong",
+            label: "Không",
+          },
+        ],
+      },
+      {
+        type: "select",
         field: "chip_id",
         label: "Chip",
         options: listChips.map((item) => {
