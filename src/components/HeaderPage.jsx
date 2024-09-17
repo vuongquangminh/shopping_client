@@ -12,7 +12,7 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, Menu, Space, Tooltip } from "antd";
+import { Badge, Button, Dropdown, Menu, Space, Tooltip } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import logo360 from "../assets/360.png";
@@ -30,27 +30,9 @@ const items = [
     icon: <ProfileOutlined />,
   },
   {
-    label: "Sản phẩm",
+    label: "Quản lý sản phẩm",
     key: "/admin/product",
     icon: <OrderedListOutlined />,
-    children: [
-      {
-        type: "group",
-        label: "Sản phẩm",
-        children: [
-          { label: "Quản lý sản phẩm", key: "/admin/product" },
-          { label: "Danh sách sản phẩm", key: "/danh-sach-san-pham" },
-        ],
-      },
-      // {
-      //   type: "group",
-      //   label: "Người dùng",
-      //   children: [
-      //     // { label: "Danh sách sản phẩm", key: "/danh-sach-san-pham" },
-      //     { label: "Option 4", key: "setting:4" },
-      //   ],
-      // },
-    ],
   },
   {
     label: "Quản lý đơn hàng",
@@ -125,12 +107,14 @@ const HeaderPage = ({ urlPath, noUser }) => {
             items={urlPath ? urlPath : items}
             className="grow"
           />
-          {!noUser && (
+          {!noUser && user?.role_name === "customer" && (
             <h4 className=" text-end">
               <Tooltip title="Giỏ hàng">
-                <Button type="text">
-                  <ShoppingCartOutlined />
-                </Button>
+                <Badge size="default" count={5}>
+                  <Button type="text">
+                    <ShoppingCartOutlined />
+                  </Button>
+                </Badge>
               </Tooltip>
               <Tooltip title="Đơn hàng" className="mx-2">
                 <Button type="text">

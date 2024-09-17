@@ -127,7 +127,13 @@ const ProductView = () => {
                         <Card
                           className="shadow"
                           hoverable
-                          style={{ width: 240 }}
+                          style={{
+                            width: 240,
+                            display: "flex",
+                            flexDirection: "column",
+                            height: "100%",
+                            justifyContent: "space-between",
+                          }}
                           cover={
                             <img
                               alt="anh-san-pham"

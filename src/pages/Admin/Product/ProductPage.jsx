@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, notification, Spin, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import PageContainer from "../../../components/PageContainer";
@@ -6,6 +6,7 @@ import request from "../../../utils/request";
 import ModalDelete from "../../../components/Modal/delete";
 import CreateNEditHasFile from "../../../components/Modal/CreateNEditHasFile";
 import VNDCellRender from "../../../utils/vnd";
+import { Link } from "react-router-dom";
 
 const ProductPage = () => {
   const [apicontext, contextHolder] = notification.useNotification();
@@ -340,6 +341,11 @@ const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
           type="text"
           onClick={() => onDeleteItem(data)}
         />
+      </Tooltip>
+      <Tooltip title={"Chi tiết"}>
+        <Link to={"/danh-sach-san-pham/" + data.id}>
+          <Button shape="circle" icon={<RightOutlined />} type="text" />
+        </Link>
       </Tooltip>
     </>
   );
