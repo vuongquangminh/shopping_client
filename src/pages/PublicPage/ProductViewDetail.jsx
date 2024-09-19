@@ -8,7 +8,7 @@ import {
   notification,
 } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import { BarChartOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import HeaderPage from "../../components/HeaderPage";
@@ -21,9 +21,14 @@ const DetailPage = () => {
   const loader = useLoaderData();
   const [description, setDescription] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [keyRender, setKeyRender] = useState(0);
   const [totalPrice, setTotalPrice] = useState(loader.data[0]?.price);
+  const [cart, setCart] = useState([]);
   const [apiContext, contextHolder] = notification.useNotification();
+  const params = useParams();
   const { user } = useAuth();
+  console.log("user: ", user);
   useEffect(() => {
     const description = [
       {
@@ -112,12 +117,49 @@ const DetailPage = () => {
     return results;
   }, []);
 
-  const handleAddCart = () => {};
+  const handleAddCart = () => {
+    const addCart = async () => {
+      setLoading(true);
+      try {
+        await request.post("cart", {
+          product_id: params.id,
+          so_luong: quantity,
+          total_price: totalPrice,
+        });
+        apiContext.success({
+          message: "Thành công",
+          description: "Thêm sản phẩm vào giỏ hàng thành công",
+        });
+        setKeyRender(Math.random());
+      } catch (error) {
+        apiContext.error({
+          message: "Thất bại",
+          description: "Thêm sản phẩm vào giỏ hàng thất bại!",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    addCart();
+  };
+
+  useEffect(() => {
+    const getCartByUser = async () => {
+      if (user?.id) {
+        const res = await request(`cart/${user.id}`);
+        res.data && setCart(res.data);
+      }
+    };
+    getCartByUser();
+  }, [user, keyRender]);
 
   return (
     <>
       {contextHolder}
-      <HeaderPage urlPath={user?.role_name === "customer" && pathHeader} />
+      <HeaderPage
+        urlPath={user?.role_name === "customer" && pathHeader}
+        countCart={cart.length}
+      />
 
       <div className="m-5">
         <Breadcrumb
@@ -183,7 +225,7 @@ const DetailPage = () => {
               <p className="mx-5 min-w-20">
                 {VNDCellRender({ data: totalPrice })}
               </p>
-              <Button type="primary" onClick={handleAddCart}>
+              <Button type="primary" loading={loading} onClick={handleAddCart}>
                 Thêm vào giỏ hàng
               </Button>
             </div>

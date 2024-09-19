@@ -62,7 +62,7 @@ const account = [
     icon: <LogoutOutlined />,
   },
 ];
-const HeaderPage = ({ urlPath, noUser }) => {
+const HeaderPage = ({ urlPath, noUser, countCart }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [current, setCurrent] = useState(location.pathname);
@@ -110,7 +110,7 @@ const HeaderPage = ({ urlPath, noUser }) => {
           {!noUser && user?.role_name === "customer" && (
             <h4 className=" text-end">
               <Tooltip title="Giỏ hàng">
-                <Badge size="default" count={5}>
+                <Badge size="default" count={countCart}>
                   <Button type="text">
                     <ShoppingCartOutlined />
                   </Button>
