@@ -9,6 +9,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import PageContainer from "../../components/PageContainer";
+import VNDCellRender from "../../utils/vnd";
 
 const Cart = () => {
   const [apiContext, contextHolder] = notification.useNotification();
@@ -52,7 +53,11 @@ const Cart = () => {
       editable: true,
       api: "cart-row-field",
     },
-    { headerName: "Số tiền phải trả", field: "total_price" },
+    {
+      headerName: "Số tiền phải trả",
+      field: "total_price",
+      cellRenderer: (data) => VNDCellRender({ data: data.data.total_price }),
+    },
     {
       headerName: "Hành động",
       field: "action",
