@@ -11,11 +11,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useLoaderData, useParams } from "react-router-dom";
 import { BarChartOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
-import HeaderPage from "../../components/HeaderPage";
 import request from "../../utils/request";
 import useAuth from "../../components/RoutePrivate/useAuth";
 import Title from "antd/es/typography/Title";
 import VNDCellRender from "../../utils/vnd";
+import LayoutPage from "../../components/LayoutPage";
 
 const DetailPage = () => {
   const loader = useLoaderData();
@@ -100,17 +100,17 @@ const DetailPage = () => {
     const results = [
       {
         label: "Danh sách sản phẩm",
-        key: "/admin/doanh-thu/product",
+        key: "/danh-sach-san-pham",
         icon: <BarChartOutlined />,
       },
       {
         label: "Khuyến mại",
-        key: "/admin/doanh-thu/product",
+        key: "/khuyen-mai",
         icon: <BarChartOutlined />,
       },
       {
         label: "Đơn hàng",
-        key: "/admin/doanh-thu/product",
+        key: "/don-hang",
         icon: <BarChartOutlined />,
       },
     ];
@@ -146,7 +146,7 @@ const DetailPage = () => {
   useEffect(() => {
     const getCartByUser = async () => {
       if (user?.id) {
-        const res = await request(`cart/${user.id}`);
+        const res = await request.post(`cart/${user.id}`);
         res.data && setCart(res.data);
       }
     };
@@ -156,45 +156,32 @@ const DetailPage = () => {
   return (
     <>
       {contextHolder}
-      <HeaderPage
-        urlPath={user?.role_name === "customer" && pathHeader}
+      <LayoutPage
+        urlPathHeader={user?.role_name === "admin" ? undefined : pathHeader}
         countCart={cart.length}
-      />
+      >
+        <div className="m-5">
+          <Breadcrumb
+            items={[
+              {
+                title: "Danh sách sản phẩm",
+                href: "/danh-sach-san-pham",
+              },
+              {
+                title: "Chi tiết",
+              },
+              {
+                title: loader.data[0]?.name,
+              },
+            ]}
+          />
 
-      <div className="m-5">
-        <Breadcrumb
-          items={[
-            {
-              title: "Danh sách sản phẩm",
-              href: "/danh-sach-san-pham",
-            },
-            {
-              title: "Chi tiết",
-            },
-            {
-              title: loader.data[0]?.name,
-            },
-          ]}
-        />
-
-        <div className="flex justify-center mt-8">
-          <Card
-            style={{ width: 300 }}
-            cover={
-              <img
-                alt="example"
-                src={
-                  loader.data[0]?.image
-                    ? `http://localhost:8000${loader.data[0]?.image}`
-                    : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
-                }
-              />
-            }
-            // actions={[<EditOutlined key="edit" />]}
-          >
-            <Meta
-              avatar={
-                <Avatar
+          <div className="flex justify-center mt-8">
+            <Card
+              style={{ width: 300 }}
+              cover={
+                <img
+                  alt="example"
                   src={
                     loader.data[0]?.image
                       ? `http://localhost:8000${loader.data[0]?.image}`
@@ -202,48 +189,65 @@ const DetailPage = () => {
                   }
                 />
               }
-              title={loader.data[0]?.name}
-              description={loader.data[0]?.role_name}
-            />
-          </Card>
-        </div>
-        {user?.role_name === "customer" && (
-          <div className="my-3 flex justify-between">
-            <Title level={3} className="">
-              Thông tin sản phẩm
-            </Title>
-            <div className="flex items-center">
-              <InputNumber
-                min={1}
-                max={10}
-                defaultValue={1}
-                onChange={(value) => {
-                  setQuantity(value);
-                  setTotalPrice(value * loader.data[0]?.price);
-                }}
+              // actions={[<EditOutlined key="edit" />]}
+            >
+              <Meta
+                avatar={
+                  <Avatar
+                    src={
+                      loader.data[0]?.image
+                        ? `http://localhost:8000${loader.data[0]?.image}`
+                        : "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fimages%2Fdefault-avatar-profile-icon-vector-social-media-user-image%2F346839683&psig=AOvVaw3nhNZvbYMGeIJXcmpTQ4-W&ust=1726200308518000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCIDQibTDvIgDFQAAAAAdAAAAABAE"
+                    }
+                  />
+                }
+                title={loader.data[0]?.name}
+                description={loader.data[0]?.role_name}
               />
-              <p className="mx-5 min-w-20">
-                {VNDCellRender({ data: totalPrice })}
-              </p>
-              <Button type="primary" loading={loading} onClick={handleAddCart}>
-                Thêm vào giỏ hàng
-              </Button>
-            </div>
+            </Card>
           </div>
-        )}
-        <div className="my-5 p-5 bg-slate-200 rounded">
-          {description &&
-            description.map((item) => (
-              <div className="flex items-center my-3 pb-2 border-b border-solid border-gray-400">
-                <p className="min-w-40">{item.label}</p>
-                <p className="flex items-center">
-                  {": "}
-                  {item.children}
+          {user?.role_name === "customer" && (
+            <div className="my-3 flex justify-between">
+              <Title level={3} className="">
+                Thông tin sản phẩm
+              </Title>
+              <div className="flex items-center">
+                <InputNumber
+                  min={1}
+                  max={10}
+                  defaultValue={1}
+                  onChange={(value) => {
+                    setQuantity(value);
+                    setTotalPrice(value * loader.data[0]?.price);
+                  }}
+                />
+                <p className="mx-5 min-w-20">
+                  {VNDCellRender({ data: totalPrice })}
                 </p>
+                <Button
+                  type="primary"
+                  loading={loading}
+                  onClick={handleAddCart}
+                >
+                  Thêm vào giỏ hàng
+                </Button>
               </div>
-            ))}
+            </div>
+          )}
+          <div className="my-5 p-5 bg-slate-200 rounded">
+            {description &&
+              description.map((item) => (
+                <div className="flex items-center my-3 pb-2 border-b border-solid border-gray-400">
+                  <p className="min-w-40">{item.label}</p>
+                  <p className="flex items-center">
+                    {": "}
+                    {item.children}
+                  </p>
+                </div>
+              ))}
+          </div>
         </div>
-      </div>
+      </LayoutPage>
     </>
   );
 };

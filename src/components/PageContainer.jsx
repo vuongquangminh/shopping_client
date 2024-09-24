@@ -10,6 +10,7 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter";
 import LayoutPage from "./LayoutPage";
 import Title from "antd/es/typography/Title";
 import { Button } from "antd";
+import request from "../utils/request";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -28,6 +29,7 @@ const PageContainer = ({
   noData,
   setIsModalOpen,
   defaultColDef,
+  urlPathHeader,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState();
@@ -79,8 +81,42 @@ const PageContainer = ({
     },
     [api, apicontext, errApi, setRowData]
   );
+  const onCellValueChanged = (params) => {
+    console.log("params: ", params);
+    const field = params.colDef.field;
+    const updateRow = async () => {
+      try {
+        const payload = { [field]: params.newValue, field }; // Dynamically set the field
+        const res = await request.put(
+          `${params.colDef.api}/${params.data.id}`,
+          payload
+        );
+        console.log("res: ", res);
+        apicontext.success({
+          message: "Thành công",
+          description: "Chỉnh sửa thành công",
+        });
+      } catch (error) {
+        console.error("Error updating row: ", error);
+        apicontext.error({
+          message: "Thất bại",
+          description: "Chỉnh sửa thất bại",
+        });
+        const updatedData = [...rowData];
+        console.log("aa: ", params.oldValue);
+        updatedData[params.node.rowIndex] = {
+          ...params.data,
+          [field]: params.oldValue,
+        };
+        console.log("updatedData: ", updatedData);
+        setRowData(updatedData);
+      }
+    };
+    updateRow();
+  };
+
   return (
-    <LayoutPage>
+    <LayoutPage urlPathHeader={urlPathHeader}>
       <div style={containerStyle} className="px-5">
         <div className="py-5 px-3 flex justify-between items-center">
           <Title level={2} className="">
@@ -101,6 +137,7 @@ const PageContainer = ({
             overlayNoRowsTemplate={noData}
             overlayLoadingTemplate={`Đang tải`}
             pagination={true}
+            onCellValueChanged={onCellValueChanged}
             paginationPageSize={20}
           />
         </div>

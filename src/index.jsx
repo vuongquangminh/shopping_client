@@ -6,6 +6,7 @@ import { lazy } from "react";
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
 import request from "./utils/request.js";
+import useAuth from "./components/RoutePrivate/useAuth.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -15,6 +16,7 @@ const DetailPage = lazy(() => import("./pages/Admin/User/DetailPage.jsx"));
 const ProductPage = lazy(() => import("./pages/Admin/Product/ProductPage.jsx"));
 const TrangChuPage = lazy(() => import("./pages/PublicPage/TrangChuPage.jsx"));
 const ProductView = lazy(() => import("./pages/User/ProductView.jsx"));
+const Cart = lazy(() => import("./pages/User/Cart.jsx"));
 const ProductViewDetail = lazy(() =>
   import("./pages/PublicPage/ProductViewDetail.jsx")
 );
@@ -96,15 +98,15 @@ const router = createBrowserRouter([
         path: "doanh-thu/product",
         element: <DoanhThuPage />,
       },
-      {
-        path: "doi-mat-khau",
-        element: <DoiMatKhau />,
-      },
     ],
   },
   {
     path: "trang-chu",
     element: <TrangChuPage />,
+  },
+  {
+    path: "doi-mat-khau",
+    element: <DoiMatKhau />,
   },
   {
     element: <PrivateOutlet role={["customer", "admin"]} />,
@@ -123,6 +125,39 @@ const router = createBrowserRouter([
             loader: async ({ params }) => {
               return request.get(`product/${params.id}`);
             },
+          },
+        ],
+      },
+      {
+        path: "gio-hang",
+        children: [
+          {
+            path: "",
+            element: <Cart />,
+            loader: async () => {
+              const user = await request.get("auth/user");
+              return user;
+            },
+          },
+          {
+            path: ":id",
+            element: <ProductViewDetail />,
+            loader: async ({ params }) => {
+              return request.get(`product/${params.id}`);
+            },
+          },
+        ],
+      },
+      {
+        path: "user",
+        children: [
+          {
+            path: "",
+            element: <UserPage />,
+          },
+          {
+            path: ":id",
+            element: <DetailPage />,
           },
         ],
       },

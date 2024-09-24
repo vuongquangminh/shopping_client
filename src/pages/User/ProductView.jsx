@@ -16,12 +16,15 @@ import request from "../../utils/request";
 import VNDCellRender from "../../utils/vnd";
 import { Link } from "react-router-dom";
 import { BarChartOutlined } from "@ant-design/icons";
+import useAuth from "../../components/RoutePrivate/useAuth";
 
 const ProductView = () => {
   const [data, setData] = useState({});
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cart, setCart] = useState([]);
   const [apiContext, contextHolder] = notification.useNotification();
+  const { user } = useAuth();
   const [paginate, setPaginate] = useState({
     page: 1,
     pageSize: 10,
@@ -81,10 +84,21 @@ const ProductView = () => {
     ];
     return results;
   }, []);
+
+  useEffect(() => {
+    const getCartByUser = async () => {
+      if (user?.id) {
+        const res = await request.post(`cart/${user.id}`);
+        res.data && setCart(res.data);
+      }
+    };
+    getCartByUser();
+  }, [user]);
+
   return (
     <>
       {contextHolder}
-      <LayoutPage urlPathHeader={pathHeader}>
+      <LayoutPage urlPathHeader={pathHeader} countCart={cart.length}>
         <>
           <div style={containerStyle}>
             <Row className="my-4">

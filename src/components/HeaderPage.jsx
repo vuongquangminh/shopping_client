@@ -13,7 +13,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Badge, Button, Dropdown, Menu, Space, Tooltip } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import logo360 from "../assets/360.png";
 import useAuth from "./RoutePrivate/useAuth";
@@ -67,6 +67,7 @@ const HeaderPage = ({ urlPath, noUser, countCart }) => {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(location.pathname);
   const { user } = useAuth();
+  console.log("user: ", user);
 
   const onClick = (e) => {
     setCurrent(e.key);
@@ -75,10 +76,12 @@ const HeaderPage = ({ urlPath, noUser, countCart }) => {
   const handleMenuClick = (e) => {
     switch (e.key) {
       case "infor":
-        navigate(`/admin/user/${user.id}`);
+        user?.role_name === "admin"
+          ? navigate(`/admin/user/${user.id}`)
+          : navigate(`/user/${user.id}`);
         break;
       case "password":
-        navigate("/admin/doi-mat-khau");
+        navigate("/doi-mat-khau");
         break;
       case "logout":
         localStorage.removeItem("authToken");
@@ -110,11 +113,13 @@ const HeaderPage = ({ urlPath, noUser, countCart }) => {
           {!noUser && user?.role_name === "customer" && (
             <h4 className=" text-end">
               <Tooltip title="Giỏ hàng">
-                <Badge size="default" count={countCart}>
-                  <Button type="text">
-                    <ShoppingCartOutlined />
-                  </Button>
-                </Badge>
+                <Link to={"/gio-hang"}>
+                  <Badge size="default" count={countCart}>
+                    <Button type="text">
+                      <ShoppingCartOutlined />
+                    </Button>
+                  </Badge>
+                </Link>
               </Tooltip>
               <Tooltip title="Đơn hàng" className="mx-2">
                 <Button type="text">
