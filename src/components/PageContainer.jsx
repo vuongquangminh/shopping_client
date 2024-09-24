@@ -30,6 +30,7 @@ const PageContainer = ({
   setIsModalOpen,
   defaultColDef,
   urlPathHeader,
+  setKeyRender,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState();
@@ -86,7 +87,11 @@ const PageContainer = ({
     const field = params.colDef.field;
     const updateRow = async () => {
       try {
-        const payload = { [field]: params.newValue, field }; // Dynamically set the field
+        const payload = {
+          [field]: params.newValue,
+          field,
+          price: params.data.product.price,
+        }; // Dynamically set the field
         const res = await request.put(
           `${params.colDef.api}/${params.data.id}`,
           payload
@@ -102,14 +107,8 @@ const PageContainer = ({
           message: "Thất bại",
           description: "Chỉnh sửa thất bại",
         });
-        const updatedData = [...rowData];
-        console.log("aa: ", params.oldValue);
-        updatedData[params.node.rowIndex] = {
-          ...params.data,
-          [field]: params.oldValue,
-        };
-        console.log("updatedData: ", updatedData);
-        setRowData(updatedData);
+      } finally {
+        setKeyRender(Math.random());
       }
     };
     updateRow();

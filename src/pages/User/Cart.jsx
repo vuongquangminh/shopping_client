@@ -113,6 +113,7 @@ const Cart = () => {
         setIsModalOpen={setIsModalOpen}
         apicontext={apiContext}
         key={keyRender}
+        setKeyRender={setKeyRender}
         errApi="Lấy thông tin người dùng thất bại"
         titleCreate="Thêm người dùng"
         noData="Không có người dùng nào"
