@@ -31,10 +31,11 @@ const PageContainer = ({
   defaultColDef,
   urlPathHeader,
   setKeyRender,
+  setThanhToan,
+  btnOther,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [rowData, setRowData] = useState();
-
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
     []
@@ -83,7 +84,6 @@ const PageContainer = ({
     [api, apicontext, errApi, setRowData]
   );
   const onCellValueChanged = (params) => {
-    console.log("params: ", params);
     const field = params.colDef.field;
     const updateRow = async () => {
       try {
@@ -92,11 +92,7 @@ const PageContainer = ({
           field,
           price: params.data.product.price,
         }; // Dynamically set the field
-        const res = await request.put(
-          `${params.colDef.api}/${params.data.id}`,
-          payload
-        );
-        console.log("res: ", res);
+        await request.put(`${params.colDef.api}/${params.data.id}`, payload);
         apicontext.success({
           message: "Thành công",
           description: "Chỉnh sửa thành công",
@@ -113,6 +109,10 @@ const PageContainer = ({
     };
     updateRow();
   };
+  const onSelectionChanged = (event) => {
+    const selectedRows = event.api.getSelectedRows();
+    setThanhToan(selectedRows);
+  };
 
   return (
     <LayoutPage urlPathHeader={urlPathHeader}>
@@ -121,6 +121,7 @@ const PageContainer = ({
           <Title level={2} className="">
             {title}
           </Title>
+          {btnOther && btnOther}
           {titleCreate && (
             <Button type="primary" onClick={handleCreate}>
               {titleCreate}
@@ -136,7 +137,9 @@ const PageContainer = ({
             overlayNoRowsTemplate={noData}
             overlayLoadingTemplate={`Đang tải`}
             pagination={true}
+            rowSelection={"multiple"}
             onCellValueChanged={onCellValueChanged}
+            onSelectionChanged={onSelectionChanged}
             paginationPageSize={20}
           />
         </div>

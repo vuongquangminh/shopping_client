@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button, notification, Tooltip } from "antd";
 import request from "../../utils/request";
 import { Link, useLoaderData } from "react-router-dom";
@@ -18,11 +18,9 @@ const Cart = () => {
   const [fileList, setFileList] = useState([]);
   const [selectItem, setSelectItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
+  const [thanhToan, setThanhToan] = useState([]);
   const loader = useLoaderData();
-  const [paginate, setPaginate] = useState({
-    page: 1,
-    pageSize: 10,
-  });
+
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
@@ -33,7 +31,12 @@ const Cart = () => {
     };
   }, []);
   const column = [
-    { headerName: "Tên sản phẩm", field: "product.name" },
+    {
+      headerName: "Tên sản phẩm",
+      field: "product.name",
+      headerCheckboxSelection: true, // Chọn checkbox cho tất cả các hàng
+      checkboxSelection: true,
+    },
     {
       headerName: "Ảnh sản phẩm",
       field: "avatar",
@@ -84,7 +87,6 @@ const Cart = () => {
       filter: false,
     },
   ];
-
   const pathHeader = useMemo(() => {
     const results = [
       {
@@ -106,6 +108,18 @@ const Cart = () => {
     return results;
   }, []);
 
+  const onThanhToan = () => {
+    console.log("thanhToan: ", thanhToan);
+  };
+  const btnThanhToan = () => {
+    return (
+      <>
+        <Button type="primary" onClick={onThanhToan}>
+          Thanh toán
+        </Button>
+      </>
+    );
+  };
   return (
     <>
       {contextHolder}
@@ -119,8 +133,9 @@ const Cart = () => {
         apicontext={apiContext}
         key={keyRender}
         setKeyRender={setKeyRender}
+        setThanhToan={setThanhToan}
         errApi="Lấy thông tin người dùng thất bại"
-        titleCreate="Thêm người dùng"
+        btnOther={btnThanhToan()}
         noData="Không có người dùng nào"
       />
     </>
