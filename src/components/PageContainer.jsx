@@ -31,7 +31,7 @@ const PageContainer = ({
   defaultColDef,
   urlPathHeader,
   setKeyRender,
-  setThanhToan,
+  onBtnOther,
   btnOther,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
@@ -111,7 +111,7 @@ const PageContainer = ({
   };
   const onSelectionChanged = (event) => {
     const selectedRows = event.api.getSelectedRows();
-    setThanhToan(selectedRows);
+    onBtnOther(selectedRows);
   };
 
   return (

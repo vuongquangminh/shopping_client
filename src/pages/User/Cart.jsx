@@ -1,9 +1,18 @@
-import { useMemo, useRef, useState } from "react";
-import { Button, notification, Tooltip } from "antd";
+import { useMemo, useState } from "react";
+import {
+  Button,
+  Drawer,
+  Image,
+  InputNumber,
+  List,
+  notification,
+  Tooltip,
+} from "antd";
 import request from "../../utils/request";
 import { Link, useLoaderData } from "react-router-dom";
 import {
   BarChartOutlined,
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   RightOutlined,
@@ -18,7 +27,7 @@ const Cart = () => {
   const [fileList, setFileList] = useState([]);
   const [selectItem, setSelectItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
-  const [thanhToan, setThanhToan] = useState([]);
+  const [datHang, setDatHang] = useState([]);
   const loader = useLoaderData();
 
   const defaultColDef = useMemo(() => {
@@ -108,14 +117,17 @@ const Cart = () => {
     return results;
   }, []);
 
-  const onThanhToan = () => {
-    console.log("thanhToan: ", thanhToan);
+  const onOpen = () => {
+    setIsModalOpen(true);
+  };
+  const onClose = () => {
+    setIsModalOpen(false);
   };
   const btnThanhToan = () => {
     return (
       <>
-        <Button type="primary" onClick={onThanhToan}>
-          Thanh toán
+        <Button type="primary" onClick={onOpen}>
+          Đặt hàng
         </Button>
       </>
     );
@@ -133,11 +145,90 @@ const Cart = () => {
         apicontext={apiContext}
         key={keyRender}
         setKeyRender={setKeyRender}
-        setThanhToan={setThanhToan}
+        onBtnOther={setDatHang}
         errApi="Lấy thông tin người dùng thất bại"
         btnOther={btnThanhToan()}
         noData="Không có người dùng nào"
       />
+      <Drawer title="Đặt hàng" width={500} onClose={onClose} open={isModalOpen}>
+        <List
+          itemLayout="horizontal"
+          dataSource={datHang}
+          footer={
+            <div className="flex flex-col">
+              <p className="text-center text-lg font-semibold mb-3">
+                Tổng tiền:{" "}
+                {VNDCellRender({
+                  data: datHang.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue.total_price,
+                    0
+                  ),
+                })}
+              </p>
+              <Button
+                type="primary"
+                onClick={() => console.log("datHang: ", datHang)}
+              >
+                Đặt hàng
+              </Button>
+            </div>
+          }
+          renderItem={(item, index) => (
+            <List.Item
+              extra={
+                <Tooltip title={"Xóa"}>
+                  <Button
+                    shape="circle"
+                    icon={<CloseOutlined />}
+                    type="text"
+                    onClick={() => {
+                      const newDatHang = datHang.filter((x) => x.id != item.id);
+                      setDatHang(newDatHang);
+                    }}
+                  />
+                </Tooltip>
+              }
+              actions={[
+                <div className="flex flex-col">
+                  <InputNumber
+                    min={1}
+                    defaultValue={item.so_luong}
+                    onChange={(value) => {
+                      const newItem = {
+                        ...item,
+                        so_luong: value,
+                        total_price: item.product.price * value,
+                      };
+                      const newDatHang = datHang.map((x, index) => {
+                        if (x.id == item.id) {
+                          return newItem;
+                        }
+                        return x;
+                      });
+                      setDatHang(newDatHang);
+                    }}
+                  />
+                  <p className="my-3 text-slate-950">
+                    {VNDCellRender({ data: item.total_price })}
+                  </p>
+                </div>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Image
+                    width={100}
+                    src={`http://localhost:8000${item.product.image}`}
+                  />
+                }
+                title={<a href="https://ant.design">{item.title}</a>}
+                description={item.product.name}
+              />
+            </List.Item>
+          )}
+        />
+      </Drawer>
     </>
   );
 };
