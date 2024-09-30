@@ -8,22 +8,21 @@ import {
   notification,
   Tooltip,
 } from "antd";
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import {
   BarChartOutlined,
   CloseOutlined,
   DeleteOutlined,
-  RightOutlined,
 } from "@ant-design/icons";
 import PageContainer from "../../components/PageContainer";
 import VNDCellRender from "../../utils/vnd";
 import request from "../../utils/request";
+import ModalDelete from "../../components/Modal/delete";
 
 const Cart = () => {
   const [apiContext, contextHolder] = notification.useNotification();
   const [keyRender, setKeyRender] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false); // Default to false
-  const [fileList, setFileList] = useState([]);
   const [selectItem, setSelectItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
   const [rowSelects, setRowSelects] = useState([]);
@@ -60,7 +59,7 @@ const Cart = () => {
       ),
     },
     {
-      headerName: "Số lượng",
+      headerName: "Số lượng ( Click 2 lần để sửa )",
       field: "so_luong",
       editable: true,
       api: "cart-row-field",
@@ -75,19 +74,6 @@ const Cart = () => {
       field: "action",
       cellRenderer: ActionCellRender,
       cellRendererParams: {
-        onEditItem: (item) => {
-          setIsModalOpen(true);
-          item.avatar
-            ? setFileList([
-                {
-                  uid: "-1", // Đảm bảo giá trị uid là duy nhất cho mỗi tệp
-                  name: "example.jpg", // Tên tệp
-                  status: "done", // Trạng thái tệp
-                  url: `http://localhost:8000${item.avatar}`, // Đường dẫn công khai
-                },
-              ])
-            : setFileList([]);
-        },
         onDeleteItem: (item) => {
           setSelectItem(item);
           setModalDelete(true);
@@ -146,6 +132,7 @@ const Cart = () => {
           message: "Thành công",
           description: "Đặt hàng thành công",
         });
+        setKeyRender(Math.random());
       } catch (error) {
         apiContext.error({
           message: "Thất bại",
@@ -251,11 +238,19 @@ const Cart = () => {
           )}
         />
       </Drawer>
+      <ModalDelete
+        open={modalDelete}
+        setOpen={setModalDelete}
+        name={selectItem?.product?.name}
+        api={`cart/${selectItem?.id}`}
+        apicontext={apiContext}
+        setKeyRender={setKeyRender}
+      />
     </>
   );
 };
 
-const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
+const ActionCellRender = ({ onDeleteItem, data }) => {
   return (
     <>
       <Tooltip title={"Xóa"}>
@@ -265,12 +260,6 @@ const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
           type="text"
           onClick={() => onDeleteItem(data)}
         />
-      </Tooltip>
-
-      <Tooltip title={"Chi tiết"}>
-        <Link to={"" + data.id}>
-          <Button shape="circle" icon={<RightOutlined />} type="text" />
-        </Link>
       </Tooltip>
     </>
   );

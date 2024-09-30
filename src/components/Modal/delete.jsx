@@ -36,7 +36,13 @@ const ModalDelete = ({
   };
   return (
     <>
-      <Modal title="" open={open} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title=""
+        centered
+        open={open}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
         <Result
           status="warning"
           title={

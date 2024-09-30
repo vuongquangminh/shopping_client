@@ -6,6 +6,8 @@ import { lazy } from "react";
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
 import request from "./utils/request.js";
+import Order from "./pages/User/Order.jsx";
+import OrderDetail from "./pages/User/OrderDetail.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -138,11 +140,21 @@ const router = createBrowserRouter([
               return user;
             },
           },
+        ],
+      },
+      {
+        path: "don-hang",
+        children: [
+          {
+            path: "",
+            element: <Order />,
+          },
           {
             path: ":id",
-            element: <ProductViewDetail />,
+            element: <OrderDetail />,
             loader: async ({ params }) => {
-              return request.get(`product/${params.id}`);
+              const user = await request.get(`order/${params.id}`);
+              return user;
             },
           },
         ],

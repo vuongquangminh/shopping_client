@@ -33,9 +33,11 @@ const PageContainer = ({
   setKeyRender,
   onBtnOther,
   btnOther,
+  breadcrumb,
+  countCart,
 }) => {
   const [columnDefs, setColumnDefs] = useState([]);
-  const [rowData, setRowData] = useState();
+  const [rowData, setRowData] = useState([]);
   const containerStyle = useMemo(
     () => ({ width: "100%", height: "100ch" }),
     []
@@ -115,8 +117,9 @@ const PageContainer = ({
   };
 
   return (
-    <LayoutPage urlPathHeader={urlPathHeader}>
+    <LayoutPage urlPathHeader={urlPathHeader} countCart={countCart}>
       <div style={containerStyle} className="px-5">
+        {breadcrumb && breadcrumb}
         <div className="py-5 px-3 flex justify-between items-center">
           <Title level={2} className="">
             {title}
