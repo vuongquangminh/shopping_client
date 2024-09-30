@@ -6,7 +6,6 @@ import { lazy } from "react";
 import "./index.css";
 import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
 import request from "./utils/request.js";
-import useAuth from "./components/RoutePrivate/useAuth.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));

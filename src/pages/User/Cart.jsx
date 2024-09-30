@@ -8,17 +8,16 @@ import {
   notification,
   Tooltip,
 } from "antd";
-import request from "../../utils/request";
 import { Link, useLoaderData } from "react-router-dom";
 import {
   BarChartOutlined,
   CloseOutlined,
   DeleteOutlined,
-  EditOutlined,
   RightOutlined,
 } from "@ant-design/icons";
 import PageContainer from "../../components/PageContainer";
 import VNDCellRender from "../../utils/vnd";
+import request from "../../utils/request";
 
 const Cart = () => {
   const [apiContext, contextHolder] = notification.useNotification();
@@ -27,7 +26,8 @@ const Cart = () => {
   const [fileList, setFileList] = useState([]);
   const [selectItem, setSelectItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
-  const [datHang, setDatHang] = useState([]);
+  const [rowSelects, setRowSelects] = useState([]);
+  const [datHangs, setDatHangs] = useState([]);
   const loader = useLoaderData();
 
   const defaultColDef = useMemo(() => {
@@ -119,9 +119,11 @@ const Cart = () => {
 
   const onOpen = () => {
     setIsModalOpen(true);
+    setDatHangs(rowSelects);
   };
   const onClose = () => {
     setIsModalOpen(false);
+    setDatHangs([]);
   };
   const btnThanhToan = () => {
     return (
@@ -131,6 +133,27 @@ const Cart = () => {
         </Button>
       </>
     );
+  };
+  const handleDatHang = () => {
+    const total_price = datHangs.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.total_price,
+      0
+    );
+    const datHang = async () => {
+      try {
+        await request.post("order", { datHangs, total_price });
+        apiContext.success({
+          message: "Thành công",
+          description: "Đặt hàng thành công",
+        });
+      } catch (error) {
+        apiContext.error({
+          message: "Thất bại",
+          description: "Đặt hàng không thành công",
+        });
+      }
+    };
+    datHang();
   };
   return (
     <>
@@ -145,7 +168,7 @@ const Cart = () => {
         apicontext={apiContext}
         key={keyRender}
         setKeyRender={setKeyRender}
-        onBtnOther={setDatHang}
+        onBtnOther={setRowSelects}
         errApi="Lấy thông tin người dùng thất bại"
         btnOther={btnThanhToan()}
         noData="Không có người dùng nào"
@@ -153,23 +176,20 @@ const Cart = () => {
       <Drawer title="Đặt hàng" width={500} onClose={onClose} open={isModalOpen}>
         <List
           itemLayout="horizontal"
-          dataSource={datHang}
+          dataSource={datHangs}
           footer={
             <div className="flex flex-col">
               <p className="text-center text-lg font-semibold mb-3">
                 Tổng tiền:{" "}
                 {VNDCellRender({
-                  data: datHang.reduce(
+                  data: datHangs.reduce(
                     (accumulator, currentValue) =>
                       accumulator + currentValue.total_price,
                     0
                   ),
                 })}
               </p>
-              <Button
-                type="primary"
-                onClick={() => console.log("datHang: ", datHang)}
-              >
+              <Button type="primary" onClick={handleDatHang}>
                 Đặt hàng
               </Button>
             </div>
@@ -183,8 +203,10 @@ const Cart = () => {
                     icon={<CloseOutlined />}
                     type="text"
                     onClick={() => {
-                      const newDatHang = datHang.filter((x) => x.id != item.id);
-                      setDatHang(newDatHang);
+                      const newDatHang = datHangs.filter(
+                        (x) => x.id != item.id
+                      );
+                      setDatHangs(newDatHang);
                     }}
                   />
                 </Tooltip>
@@ -200,13 +222,13 @@ const Cart = () => {
                         so_luong: value,
                         total_price: item.product.price * value,
                       };
-                      const newDatHang = datHang.map((x, index) => {
+                      const newDatHang = datHangs.map((x, index) => {
                         if (x.id == item.id) {
                           return newItem;
                         }
                         return x;
                       });
-                      setDatHang(newDatHang);
+                      setDatHangs(newDatHang);
                     }}
                   />
                   <p className="my-3 text-slate-950">
@@ -236,14 +258,6 @@ const Cart = () => {
 const ActionCellRender = ({ onEditItem, onDeleteItem, data }) => {
   return (
     <>
-      <Tooltip title={"Chỉnh sửa"}>
-        <Button
-          shape="circle"
-          icon={<EditOutlined />}
-          type="text"
-          onClick={() => onEditItem(data)}
-        />
-      </Tooltip>
       <Tooltip title={"Xóa"}>
         <Button
           shape="circle"

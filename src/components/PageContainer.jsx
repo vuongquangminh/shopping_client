@@ -139,7 +139,7 @@ const PageContainer = ({
             pagination={true}
             rowSelection={"multiple"}
             onCellValueChanged={onCellValueChanged}
-            onSelectionChanged={onSelectionChanged}
+            onSelectionChanged={onBtnOther && onSelectionChanged}
             paginationPageSize={20}
           />
         </div>
