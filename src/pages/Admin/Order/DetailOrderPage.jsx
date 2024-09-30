@@ -3,6 +3,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import PageContainer from "../../../components/PageContainer";
 import request from "../../../utils/request";
+import VNDCellRender from "../../../utils/vnd";
 
 const DetailOrderPage = () => {
   const [apicontext, contextHolder] = notification.useNotification();
@@ -35,6 +36,12 @@ const DetailOrderPage = () => {
       headerName: "Số lượng",
       field: "so_luong",
       flex: 150,
+    },
+    {
+      headerName: "Số tiền",
+      field: "product.price",
+      flex: 150,
+      cellRenderer: (data) => VNDCellRender({ data: data.data.product.price }),
     },
   ];
   return (

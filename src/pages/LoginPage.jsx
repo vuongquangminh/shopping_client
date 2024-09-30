@@ -22,6 +22,8 @@ const LoginPage = () => {
               return navigate("/admin/user");
             case "customer":
               return navigate("/danh-sach-san-pham");
+            case "nhan_su":
+              return navigate("/nhiem-vu");
             default:
               return navigate("/");
           }

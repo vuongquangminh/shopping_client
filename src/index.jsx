@@ -8,6 +8,7 @@ import PrivateOutlet from "./components/RoutePrivate/PrivateOutlet";
 import request from "./utils/request.js";
 import Order from "./pages/User/Order.jsx";
 import OrderDetail from "./pages/User/OrderDetail.jsx";
+import NhiemVu from "./pages/NhanSu/NhiemVu.jsx";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -172,6 +173,64 @@ const router = createBrowserRouter([
           },
         ],
       },
+    ],
+  },
+  {
+    element: <PrivateOutlet role="nhan_su" />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "nhiem-vu",
+        children: [
+          {
+            path: "",
+            element: <NhiemVu />,
+          },
+        ],
+      },
+      // {
+      //   path: "gio-hang",
+      //   children: [
+      //     {
+      //       path: "",
+      //       element: <Cart />,
+      //       loader: async () => {
+      //         const user = await request.get("auth/user");
+      //         return user;
+      //       },
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: "don-hang",
+      //   children: [
+      //     {
+      //       path: "",
+      //       element: <Order />,
+      //     },
+      //     {
+      //       path: ":id",
+      //       element: <OrderDetail />,
+      //       loader: async ({ params }) => {
+      //         const user = await request.get(`order/${params.id}`);
+      //         return user;
+      //       },
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: "user",
+      //   children: [
+      //     {
+      //       path: "",
+      //       element: <UserPage />,
+      //     },
+      //     {
+      //       path: ":id",
+      //       element: <DetailPage />,
+      //     },
+      //   ],
+      // },
     ],
   },
 ]);
