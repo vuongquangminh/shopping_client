@@ -1,7 +1,9 @@
 import { Button, Modal, Space, Table } from "antd";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import request from "../../utils/request";
+import VNDCellRender from "../../utils/vnd";
 
-const NhiemVuDialog = ({ open, setOpen, item }) => {
+const NhiemVuDialog = ({ open, setOpen, item, apicontext, setKeyRender }) => {
   const [nhiemVu, setNhiemVu] = useState([]);
 
   const columns = [
@@ -26,7 +28,7 @@ const NhiemVuDialog = ({ open, setOpen, item }) => {
           key: item?.id,
           name: item?.user?.name,
           address: item?.user?.address,
-          total_price: item?.total_price,
+          total_price: VNDCellRender({ data: item?.total_price }),
         },
       ];
       setNhiemVu(data);
@@ -41,10 +43,48 @@ const NhiemVuDialog = ({ open, setOpen, item }) => {
   };
 
   const handleSubmit = () => {
-    console.log("submit: ");
+    const xacNhan = async () => {
+      try {
+        await request.post(`xac-nhan-nhiem-vu/${item.id}`, {
+          req: "xac_nhan",
+        });
+        apicontext.success({
+          message: "Thành công",
+          description: "Xác nhận đơn hàng thành công!",
+        });
+        setKeyRender(Math.random());
+      } catch (error) {
+        apicontext.success({
+          message: "Thất bại",
+          description: "Xác nhận đơn hàng thất bại!",
+        });
+      } finally {
+        setOpen(false);
+      }
+    };
+    xacNhan();
   };
   const handleTuChoi = () => {
-    console.log("tu_choi");
+    const xacNhan = async () => {
+      try {
+        await request.post(`xac-nhan-nhiem-vu/${item.id}`, {
+          req: "tu_choi",
+        });
+        apicontext.success({
+          message: "Thành công",
+          description: "Từ chối đơn hàng thành công!",
+        });
+        setKeyRender(Math.random());
+      } catch (error) {
+        apicontext.success({
+          message: "Thất bại",
+          description: "Từ chối đơn hàng thất bại!",
+        });
+      } finally {
+        setOpen(false);
+      }
+    };
+    xacNhan();
   };
   return (
     <>
@@ -75,4 +115,4 @@ const NhiemVuDialog = ({ open, setOpen, item }) => {
   );
 };
 
-export default NhiemVuDialog;
+export default memo(NhiemVuDialog);

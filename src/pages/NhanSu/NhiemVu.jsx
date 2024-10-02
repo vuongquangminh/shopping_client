@@ -4,30 +4,39 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
+  SafetyOutlined,
   SignatureOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
-import ModalDelete from "../../components/Modal/delete";
 import { useState } from "react";
 import dayjs from "dayjs";
 import request from "../../utils/request";
 import NhiemVuDialog from "./NhiemVuDialog";
+import HoanThanhDialog from "./HoanThanhDialog";
+import VNDCellRender from "../../utils/vnd";
 
 const NhiemVu = () => {
   const [apicontext, contextHolder] = notification.useNotification();
   const [modalNhanViec, setIsModalNhanViec] = useState(false); // Default to false
   const [keyRender, setKeyRender] = useState(1);
   const [item, setItem] = useState();
-  const [modalTuChoi, setModalTuChoi] = useState(false);
+  const [modalHoanThanh, setModalHoanThanh] = useState(false);
   const column = [
     { headerName: "Tên người đặt hàng", field: "user.name", minWidth: 150 },
-    { headerName: "Giá trị đơn hàng", field: "total_price", flex: 150 },
     { headerName: "Địa chỉ giao hàng", field: "user.address", flex: 150 },
+    {
+      headerName: "Giá trị đơn hàng",
+      field: "total_price",
+      flex: 150,
+      cellRenderer: (data) => {
+        return VNDCellRender({ data: data?.data?.total_price });
+      },
+    },
     {
       headerName: "Trạng thái đơn hàng",
       field: "status",
       flex: 150,
-      cellRenderer: (data) => TrangThaiCellRender({ data: data?.data?.status }),
+      cellRenderer: (data) => TrangThaiCellRender({ data: data?.data }),
     },
     {
       headerName: "Ngày hạn",
@@ -46,9 +55,9 @@ const NhiemVu = () => {
           setIsModalNhanViec(true);
           setItem(item);
         },
-        onTuChoi: (item) => {
+        onHoanThanh: (item) => {
           setItem(item);
-          setModalTuChoi(true);
+          setModalHoanThanh(true);
         },
       },
       filter: false,
@@ -67,19 +76,20 @@ const NhiemVu = () => {
         errApi="Lấy thông tin nhiệm vụ thất bại"
         noData="Không có nhiệm vụ nào"
       />
-
-      <ModalDelete
-        open={modalTuChoi}
-        setOpen={setModalTuChoi}
-        name={`bỏ đơn hàng của ${item?.user.name}`}
-        api={`order/${item?.id}`}
-        apicontext={apicontext}
+      <HoanThanhDialog
+        open={modalHoanThanh}
+        setOpen={setModalHoanThanh}
+        item={item}
         setKeyRender={setKeyRender}
+        apicontext={apicontext}
       />
+
       <NhiemVuDialog
         open={modalNhanViec}
         setOpen={setIsModalNhanViec}
         item={item}
+        apicontext={apicontext}
+        setKeyRender={setKeyRender}
       />
     </>
   );
@@ -87,7 +97,7 @@ const NhiemVu = () => {
 
 export default NhiemVu;
 
-const ActionCellRender = ({ onNhanViec, onTuChoi, data }) => {
+const ActionCellRender = ({ onNhanViec, onHoanThanh, data }) => {
   return (
     <>
       {data.status === "cho_nhan_viec" && (
@@ -100,6 +110,16 @@ const ActionCellRender = ({ onNhanViec, onTuChoi, data }) => {
           />
         </Tooltip>
       )}
+      {data.status === "dang_giao_hang" && (
+        <Tooltip title={"Hoàn thành"}>
+          <Button
+            shape="circle"
+            icon={<SafetyOutlined />}
+            type="text"
+            onClick={() => onHoanThanh(data)}
+          />
+        </Tooltip>
+      )}
     </>
   );
 };
@@ -107,7 +127,7 @@ const TrangThaiCellRender = ({ data }) => {
   if (!data) {
     return <></>;
   }
-  switch (data) {
+  switch (data?.status) {
     case "cho_xac_nhan":
       return (
         <Tag icon={<ClockCircleOutlined />} color="#43b10c">
@@ -122,9 +142,11 @@ const TrangThaiCellRender = ({ data }) => {
       );
     case "dang_giao_hang":
       return (
-        <Tag icon={<SyncOutlined spin />} color="#108ee9">
-          Đang giao hàng"
-        </Tag>
+        <>
+          <Tag icon={<SyncOutlined spin />} color="#108ee9">
+            {`Đang giao hàng ${data.percent}% `}
+          </Tag>
+        </>
       );
     case "hoan_thanh":
       return (
