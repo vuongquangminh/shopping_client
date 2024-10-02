@@ -1,6 +1,7 @@
 import { Button, notification, Tag, Tooltip } from "antd";
 import PageContainer from "../../components/PageContainer";
 import {
+  BarChartOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
@@ -8,7 +9,7 @@ import {
   SignatureOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import request from "../../utils/request";
 import NhiemVuDialog from "./NhiemVuDialog";
@@ -64,11 +65,33 @@ const NhiemVu = () => {
     },
   ];
 
+  const pathHeader = useMemo(() => {
+    const results = [
+      {
+        label: "Nhiệm vụ của tôi",
+        key: "/nhiem-vu",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Khuyến mại",
+        key: "/khuyen-mai",
+        icon: <BarChartOutlined />,
+      },
+      {
+        label: "Đơn hàng",
+        key: "/don-hang",
+        icon: <BarChartOutlined />,
+      },
+    ];
+    return results;
+  }, []);
+
   return (
     <>
       {contextHolder}
       <PageContainer
         title="Nhiệm vụ của tôi"
+        urlPathHeader={pathHeader}
         column={column}
         api={() => request.get("nhiem-vu")}
         apicontext={apicontext}
