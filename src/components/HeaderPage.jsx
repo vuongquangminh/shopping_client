@@ -138,9 +138,12 @@ const HeaderPage = ({ urlPath, noUser, countCart }) => {
                 placement="bottomRight"
                 arrow
               >
-                <Button>
-                  <UserOutlined />
-                </Button>
+                <div className="flex flex-col items-center">
+                  <Button>
+                    <UserOutlined />
+                  </Button>
+                  {user?.name}
+                </div>
               </Dropdown>
             </Space>
           </h4>

@@ -9,6 +9,8 @@ import request from "./utils/request.js";
 import Order from "./pages/User/Order.jsx";
 import OrderDetail from "./pages/User/OrderDetail.jsx";
 import NhiemVu from "./pages/NhanSu/NhiemVu.jsx";
+import store from "./store/index.js";
+import { Provider } from "react-redux";
 
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage.jsx"));
@@ -237,8 +239,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <React.Suspense fallback={<div>Đang tải...</div>}>
-      <RouterProvider router={router} />
-    </React.Suspense>
+    <Provider store={store}>
+      <React.Suspense fallback={<div>Đang tải...</div>}>
+        <RouterProvider router={router} />
+      </React.Suspense>
+    </Provider>
   </React.StrictMode>
 );
