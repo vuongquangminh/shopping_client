@@ -16,6 +16,8 @@ import useAuth from "../../components/RoutePrivate/useAuth";
 import Title from "antd/es/typography/Title";
 import VNDCellRender from "../../utils/vnd";
 import LayoutPage from "../../components/LayoutPage";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDataCart } from "../../store/feature/featureCartSlice";
 
 const DetailPage = () => {
   const loader = useLoaderData();
@@ -24,11 +26,19 @@ const DetailPage = () => {
   const [loading, setLoading] = useState(false);
   const [keyRender, setKeyRender] = useState(0);
   const [totalPrice, setTotalPrice] = useState(loader.data[0]?.price);
-  const [cart, setCart] = useState([]);
   const [apiContext, contextHolder] = notification.useNotification();
   const params = useParams();
   const { user } = useAuth();
+  const dispatch = useDispatch();
+  const { items } = useSelector((state) => state.featureCart);
   console.log("user: ", user);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchDataCart(user.id)); // Truyền userId khi gọi API
+    }
+  }, [user, keyRender]);
+
   useEffect(() => {
     const description = [
       {
@@ -143,22 +153,12 @@ const DetailPage = () => {
     addCart();
   };
 
-  useEffect(() => {
-    const getCartByUser = async () => {
-      if (user?.id) {
-        const res = await request.post(`cart/${user.id}`);
-        res.data && setCart(res.data);
-      }
-    };
-    getCartByUser();
-  }, [user, keyRender]);
-
   return (
     <>
       {contextHolder}
       <LayoutPage
         urlPathHeader={user?.role_name === "admin" ? undefined : pathHeader}
-        countCart={cart.length}
+        countCart={items.length}
       >
         <div className="m-5">
           <Breadcrumb

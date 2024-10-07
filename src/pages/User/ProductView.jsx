@@ -17,14 +17,17 @@ import VNDCellRender from "../../utils/vnd";
 import { Link } from "react-router-dom";
 import { BarChartOutlined } from "@ant-design/icons";
 import useAuth from "../../components/RoutePrivate/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDataCart } from "../../store/feature/featureCartSlice";
 
 const ProductView = () => {
   const [data, setData] = useState({});
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [cart, setCart] = useState([]);
   const [apiContext, contextHolder] = notification.useNotification();
   const { user } = useAuth();
+  const dispatch = useDispatch();
+  const { items } = useSelector((state) => state.featureCart);
   const [paginate, setPaginate] = useState({
     page: 1,
     pageSize: 10,
@@ -87,9 +90,8 @@ const ProductView = () => {
 
   useEffect(() => {
     const getCartByUser = async () => {
-      if (user?.id) {
-        const res = await request.post(`cart/${user.id}`);
-        res.data && setCart(res.data);
+      if (user) {
+        dispatch(fetchDataCart(user.id)); // Truyền userId khi gọi API
       }
     };
     getCartByUser();
@@ -98,7 +100,7 @@ const ProductView = () => {
   return (
     <>
       {contextHolder}
-      <LayoutPage urlPathHeader={pathHeader} countCart={cart.length}>
+      <LayoutPage urlPathHeader={pathHeader} countCart={items.length}>
         <>
           <div style={containerStyle}>
             <Row className="my-4">

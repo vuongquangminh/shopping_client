@@ -1,21 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Drawer,
-  Image,
-  InputNumber,
-  List,
-  notification,
-  Tag,
-  Tooltip,
-} from "antd";
-import { Link, useLoaderData } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, notification, Tag, Tooltip } from "antd";
+import { Link } from "react-router-dom";
 import {
   BarChartOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  CloseOutlined,
   DeleteOutlined,
   RightOutlined,
   SyncOutlined,
@@ -25,6 +15,8 @@ import VNDCellRender from "../../utils/vnd";
 import request from "../../utils/request";
 import ModalDelete from "../../components/Modal/delete";
 import useAuth from "../../components/RoutePrivate/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDataCart, increase } from "../../store/feature/featureCartSlice";
 
 const Order = () => {
   const [apiContext, contextHolder] = notification.useNotification();
@@ -32,7 +24,8 @@ const Order = () => {
   const [selectItem, setSelectItem] = useState();
   const [modalDelete, setModalDelete] = useState(false);
   const { user } = useAuth();
-  const [cart, setCart] = useState([]);
+  const dispatch = useDispatch();
+  const { items } = useSelector((state) => state.featureCart);
 
   const defaultColDef = useMemo(() => {
     return {
@@ -44,14 +37,11 @@ const Order = () => {
     };
   }, []);
   useEffect(() => {
-    const getCartByUser = async () => {
-      if (user?.id) {
-        const res = await request.post(`cart/${user.id}`);
-        res.data && setCart(res.data);
-      }
-    };
-    getCartByUser();
+    if (user) {
+      dispatch(fetchDataCart(user.id)); // Truyền userId khi gọi API
+    }
   }, [user]);
+
   const column = [
     {
       headerName: "Sản phẩm",
@@ -135,7 +125,7 @@ const Order = () => {
     <>
       {contextHolder}
       <PageContainer
-        countCart={cart.length}
+        countCart={items.length}
         urlPathHeader={pathHeader}
         title="Đơn đặt hàng"
         column={column}
